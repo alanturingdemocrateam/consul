@@ -721,6 +721,7 @@ es:
       debates: "Debates"
       comments: "Comentarios"
       local_census_records: Gestionar censo local
+      machine_learning: "Machine learning"
     administrators:
       index:
         title: Administradores
@@ -1633,3 +1634,21 @@ es:
           created: Registros creados
         local_census_records:
           no_records_found: No se han encontrado registros.
+    machine_learning:
+      title: "Machine learning"
+      help_text: "Esta Funcionalidad es experimental."
+      tab_help: "Ayuda sobre machine learning"
+      tab_scripts: "Machine learning scripts"
+      comments_summary: "Resumen de comentarios"
+      comments_summary_description: "Muestra un resumen de comentarios generado automáticamente en todos los elementos que pueden ser comentados."
+      related_content: "Contenido relacionado"
+      related_content_description: "Añade contenido relacionado generado automáticamente a las propuestas y proyectos de presupuestos participativos."
+      tags: "Etiquetas"
+      tags_description: "Genera etiquetas automáticas para las propuestas que sustituyen a las añadidas por los usuarios."
+      help:
+        title: "Cómo funciona el the machine learning"
+        scripts: "La lista para los scripts disponibles es generada por los archivos ubicados en la carpeta <code>lib/machine_learning/scripts</code>."
+      notice:
+        success: "¡El script se ha ejecutado correctamente!"
+        error: "Se ha producido un error. Por favor, ejecuta de nuevo el script."
+        working: "El script se está ejecutando. Recibirás un email a %{email} cuando termine."

@@ -337,6 +337,15 @@ $table-header:   #ecf1f6;
   .select-order {
     min-width: rem-calc(160);
   }
+
+  .card-divider {
+    background: #1779ba;
+    color: #fff;
+
+    h3 {
+      margin-top: 0;
+    }
+  }
 }
 
 .for-print-only {
