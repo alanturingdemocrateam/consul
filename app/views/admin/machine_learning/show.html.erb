@@ -1,0 +1,68 @@
+<h1><%= t("admin.machine_learning.title") %></h1>
+
+<% if Setting["feature.machine_learning"].present? %>
+  <div class="callout primary">
+    <span class="fas fa-flask"></span>
+    <strong><%= sanitize(t("admin.machine_learning.help_text")) %></strong>
+  </div>
+
+  <ul class="tabs" data-tabs id="machine_learning_tabs" data-deep-link="true">
+    <li class="tabs-title is-active">
+      <a href="#panel_scripts" aria-selected="true">
+        <%= t("admin.machine_learning.tab_scripts") %>
+      </a>
+    </li>
+    <li class="tabs-title">
+      <a data-tabs-target="panel_help" href="#panel_help">
+        <%= t("admin.machine_learning.tab_help") %>
+      </a>
+    </li>
+  </ul>
+
+  <% if @machine_learning_job.errored? %>
+    <div class="callout alert">
+      <p>
+        <span class="fas fa-ban"></span>
+        <strong><%= t("admin.machine_learning.notice.error") %></strong>
+      </p>
+
+      <p>
+        <strong><%= t("admin.machine_learning.executed_by") %></strong> <%= @machine_learning_job.user.name %><br>
+        <strong><%= t("admin.machine_learning.script_name") %></strong> <%= @machine_learning_job.script %><br>
+        <strong><%= t("admin.machine_learning.error") %></strong> <%= sanitize(@machine_learning_job.error) %>
+      </p>
+    </div>
+  <% elsif @machine_learning_job.finished? %>
+    <div class="callout success">
+      <span class="fas fa-check-circle"></span>
+      <strong><%= t("admin.machine_learning.notice.success") %></strong>
+    </div>
+  <% elsif @machine_learning_job.started? %>
+    <div class="callout warning">
+      <p>
+        <span class="fas fa-hourglass-half"></span>
+        <strong><%= t("admin.machine_learning.notice.working") %></strong>
+      </p>
+
+      <p>
+        <strong><%= t("admin.machine_learning.executed_by") %></strong> <%= @machine_learning_job.user.name %><br>
+        <strong><%= t("admin.machine_learning.script_name") %></strong> <%= @machine_learning_job.script %><br>
+        <strong><%= t("admin.machine_learning.started_at") %></strong> <%= @machine_learning_job.started_at %>
+      </p>
+    </div>
+  <% end %>
+
+  <div class="tabs-content" data-tabs-content="machine_learning_tabs">
+    <%= render "scripts_tab", machine_learning_job: @machine_learning_job %>
+
+    <%= render "help_tab" %>
+  </div>
+<% else %>
+  <div class="callout primary">
+    <p>
+      <%= sanitize(t("admin.machine_learning.feature_disabled",
+                      link: link_to(t("admin.machine_learning.feature_disabled_link"),
+                                    admin_settings_path(anchor: "tab-feature-flags")))) %>
+    </p>
+  </div>
+<% end %>

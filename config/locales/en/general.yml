@@ -980,3 +980,6 @@ en:
       more:
         one: "One more tag"
         other: "%{count} more tags"
+  machine_learning:
+    summary_comments: "Summary comments"
+    summary_comments_info_text: "Summary of comments elaborated by Machine Learning"

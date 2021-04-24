@@ -7,11 +7,10 @@ class TagCloud
   end
 
   def tags
-    resource_model_scoped.
-    last_week.tag_counts.
-    where("lower(name) NOT IN (?)", category_names + geozone_names + default_blacklist).
-    order("#{table_name}_count": :desc, name: :asc).
-    limit(10)
+    cloud_tags = resource_model_scoped.last_week.tag_counts.
+                     where("lower(name) NOT IN (?)", category_names + geozone_names + default_blacklist)
+    cloud_tags = cloud_tags.where.not(id: ml_tags) unless Setting["machine_learning.tags"]
+    cloud_tags.order("#{table_name}_count": :desc, name: :asc).limit(10)
   end
 
   def category_names
@@ -20,6 +19,10 @@ class TagCloud
 
   def geozone_names
     Geozone.all.map { |geozone| geozone.name.downcase }
+  end
+
+  def ml_tags
+    MlTag.pluck(:tag_id)
   end
 
   def resource_model_scoped
