@@ -258,6 +258,8 @@ namespace :admin do
   namespace :local_census_records do
     resources :imports, only: [:new, :create, :show]
   end
+
+  resource :machine_learning, controller: :machine_learning, only: [:show]
 end
 
 resolve "Milestone" do |milestone|
