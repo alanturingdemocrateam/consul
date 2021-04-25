@@ -259,7 +259,10 @@ namespace :admin do
     resources :imports, only: [:new, :create, :show]
   end
 
-  resource :machine_learning, controller: :machine_learning, only: [:show]
+  resource :machine_learning, controller: :machine_learning, only: [:show] do
+    post :execute, on: :collection
+    post :delete, on: :collection
+  end
 end
 
 resolve "Milestone" do |milestone|

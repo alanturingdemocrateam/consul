@@ -1,8 +1,8 @@
 <h1><%= t("admin.machine_learning.title") %></h1>
 
 <div class="callout primary">
- <span class="fas fa-flask"></span>
- <strong><%= sanitize(t("admin.machine_learning.help_text")) %></strong>
+  <span class="fas fa-flask"></span>
+  <strong><%= sanitize(t("admin.machine_learning.help_text")) %></strong>
 </div>
 
 <ul class="tabs" data-tabs id="machine_learning_tabs" data-deep-link="true">
@@ -18,23 +18,40 @@
   </li>
 </ul>
 
-<div class="callout success">
- <span class="fas fa-check-circle"></span>
- <strong><%= t("admin.machine_learning.notice.success") %></strong>
-</div>
+<% if @machine_learning_job.errored? %>
+  <div class="callout alert">
+    <span class="fas fa-ban"></span>
+    <strong><%= t("admin.machine_learning.notice.error") %></strong>
+  </div>
+  <span>
+    #TODO: Improve styles for errors<br>
+    #TODO: Make sure the error is displayed in different lines<br>
+    Executed by: <%= @machine_learning_job.user.name %><br>
+    Script name: <%= @machine_learning_job.script %><br>
+    Error:<br>
+    <%= @machine_learning_job.error %>
+  </span>
+<% elsif @machine_learning_job.finished? %>
+  <div class="callout success">
+    <span class="fas fa-check-circle"></span>
+    <strong><%= t("admin.machine_learning.notice.success") %></strong>
+  </div>
+<% elsif @machine_learning_job.started? %>
+  <div class="callout warning">
+    <span class="fas fa-hourglass-half"></span>
+    <strong><%= t("admin.machine_learning.notice.working", email: current_user.email) %></strong>
+  </div>
+  <span>
+    #TODO: Improve style<br>
+    Author: <%= @machine_learning_job.user.name %><br>
+    Script name: <%= @machine_learning_job.script %><br>
+    Started at: <%= @machine_learning_job.started_at %><br>
+  </span>
+<% end %>
 
-<div class="callout warning">
- <span class="fas fa-hourglass-half"></span>
- <strong><%= t("admin.machine_learning.notice.working", email: current_user.email) %></strong>
-</div>
-
-<div class="callout alert">
- <span class="fas fa-ban"></span>
- <strong><%= t("admin.machine_learning.notice.error") %></strong>
-</div>
 
 <div class="tabs-content" data-tabs-content="machine_learning_tabs">
-  <%= render "scripts_tab" %>
+  <%= render "scripts_tab", machine_learning_job: @machine_learning_job %>
 
   <%= render "help_tab" %>
 </div>
