@@ -54,26 +54,27 @@
       </div>
     </div>
 
-    #TODO: Add translations<br>
-    #TODO: Add alert message<br>
-    <%= link_to "Delete Generated content", delete_admin_machine_learning_path, method: :post, class: "delete" %>
+    <%= link_to t("admin.machine_learning.delete_generated_content"),
+                delete_admin_machine_learning_path,
+                method: :post, class: "delete",
+                data: { confirm: t("admin.machine_learning.delete_generated_content_alert") } %>
   <% elsif machine_learning_job.running_for_too_long? %>
-    #OPTIONAL: Preguntar a Miguel como o cuando hacer esto<br>
-    #TODO: Add translations<br>
-    #TODO: Add alert message<br>
-    <%= link_to "Cancel Operation", delete_admin_machine_learning_path, method: :post, class: "delete" %>
+    <%= link_to t("admin.machine_learning.cancel"),
+                delete_admin_machine_learning_path,
+                method: :post, class: "button hollow alert",
+                data: { confirm: t("admin.machine_learning.cancel_alert") } %>
   <% elsif !machine_learning_job.started? %>
     <div class="callout secondary">
-      A brief description explaining what will happen when an administrator executes a script.
+      <%= t("admin.machine_learning.script_info", email: current_user.email) %>
     </div>
-   #TODO: Add translations
+
     <div class="small-12 column">
       <div class="small-12 medium-6 large-4 margin-bottom end">
         <%= form_tag execute_admin_machine_learning_path, method: :post do %>
-          <label for="script">Select pyhton script to execute</label>
+          <label for="script"><%= t("admin.machine_learning.select_script") %></label>
           <%= select_tag "script", options_for_select(script_select_options) %>
 
-          <%= submit_tag "Execute script", class: "button primary" %>
+          <%= submit_tag t("admin.machine_learning.execute_script"), class: "button primary" %>
         <% end %>
       </div>
     </div>

@@ -13,6 +13,10 @@ class MachineLearningJob < ApplicationRecord
     error.present?
   end
 
+  def error_message
+    error.gsub(/\n/, "<br>")
+  end
+
   def running_for_too_long?
     started? && !finished? && started_at < 1.day.ago
   end

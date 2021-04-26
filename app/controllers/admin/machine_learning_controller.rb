@@ -23,8 +23,7 @@ class Admin::MachineLearningController < Admin::BaseController
     MachineLearning.cleanup!
     MachineLearningJob.destroy_all
 
-    #TODO: Add translations
-    redirect_to admin_machine_learning_path, notice: "Generated content has been successfully deleted."
+    redirect_to admin_machine_learning_path, notice: t("admin.machine_learning.notice.delete_generated_content")
   end
 
   private
