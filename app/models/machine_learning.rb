@@ -54,8 +54,9 @@ class MachineLearning
       result = $?.success?
       if result == false
         job.update!(finished_at: Time.current, error: output)
-        #TODO: notify user
+        Mailer.machine_learning_error(@user).deliver_later
       end
+      Mailer.machine_learning_success(@user).deliver_later
       result
     end
 
@@ -135,7 +136,7 @@ class MachineLearning
       backtrace = error.backtrace.select { |line| line.include?("machine_learning.rb") }
       full_error = ([message] + backtrace).join("\n")
       job.update!(finished_at: Time.current, error: full_error)
-      #TODO: notify user
+      Mailer.machine_learning_error(@user).deliver_later
     end
 
     def full_path_for(filename)
