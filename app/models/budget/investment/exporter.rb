@@ -12,6 +12,15 @@ class Budget::Investment::Exporter
     end
   end
 
+  def to_csv_file(filename)
+    CSV.open(filename, "wb", headers: true) do |csv|
+      csv << %w[id title description]
+      Budget::Investment.find_each do |investment|
+        csv << [investment.id, strip_tags(investment.title), strip_tags(investment.description)]
+      end
+    end
+  end
+
   private
 
     def headers
@@ -63,5 +72,9 @@ class Budget::Investment::Exporter
       else
         I18n.t(price_string)
       end
+    end
+
+    def strip_tags(html_string)
+      ActionView::Base.full_sanitizer.sanitize(html_string)
     end
 end
