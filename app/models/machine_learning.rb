@@ -25,7 +25,7 @@ class MachineLearning
       import_ml_taggins
 
       job.update!(finished_at: Time.current)
-      Mailer.machine_learning_success(@user).deliver_later
+      Mailer.machine_learning_success(user).deliver_later
     rescue Exception => error
       handle_error(error)
       raise error
@@ -55,8 +55,8 @@ class MachineLearning
       result = $?.success?
       if result == false
         job.update!(finished_at: Time.current, error: output)
-        Mailer.machine_learning_error(@user).deliver_later
         exit -1
+        Mailer.machine_learning_error(user).deliver_later
       end
       result
     end
@@ -137,7 +137,7 @@ class MachineLearning
       backtrace = error.backtrace.select { |line| line.include?("machine_learning.rb") }
       full_error = ([message] + backtrace).join("<br>")
       job.update!(finished_at: Time.current, error: full_error)
-      Mailer.machine_learning_error(@user).deliver_later
+      Mailer.machine_learning_error(user).deliver_later
     end
 
     def full_path_for(filename)
