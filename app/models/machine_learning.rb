@@ -71,7 +71,6 @@ class MachineLearning
       CSV.foreach(csv_file, col_sep: ";", headers: true) do |line|
         attributes = line.to_hash.deep_symbolize_keys!
         attributes.delete(:id)
-        attributes[:commentable_type] = "Proposal"
         unless MlSummaryComment.find_by(commentable_id: attributes[:commentable_id],
                                         commentable_type: attributes[:commentable_type])
           MlSummaryComment.create!(attributes)

@@ -980,3 +980,6 @@ es:
       more:
         one: "Una etiqueta más"
         other: "%{count} etiquetas más"
+  machine_learning:
+    summary_comments: "Resumen de comentarios"
+    summary_comments_info_text: "Resumen de comentarios elaborado mediante Machine Learning"
