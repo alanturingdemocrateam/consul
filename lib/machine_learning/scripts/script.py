@@ -1,9 +1,10 @@
+import os
 import csv
 import time
 
 time.sleep(5)
 
-with open("/Users/julian/democrateam/alan_turing/consul/lib/machine_learning/scripts/machine_learning_proposals_related_nmf.csv", mode="w") as csv_file:
+with open(os.getcwd() + "/lib/machine_learning/scripts/machine_learning_proposals_related_nmf.csv", mode="w") as csv_file:
     csv_writer = csv.writer(csv_file, delimiter=";", quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
     csv_writer.writerow([1, 3, 5, 7, 9])
@@ -11,7 +12,7 @@ with open("/Users/julian/democrateam/alan_turing/consul/lib/machine_learning/scr
     csv_writer.writerow([3, 10, 4, "", 12, 14])
     csv_writer.writerow([4, 1, 2, 3])
 
-with open("/Users/julian/democrateam/alan_turing/consul/lib/machine_learning/scripts/machine_learning_comments_textrank.csv", mode="w") as csv_file:
+with open(os.getcwd() + "/lib/machine_learning/scripts/machine_learning_comments_textrank.csv", mode="w") as csv_file:
     csv_writer = csv.writer(csv_file, delimiter=";", quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
     csv_writer.writerow(["id", "commentable_id", "commentable_type", "body"])
@@ -20,7 +21,7 @@ with open("/Users/julian/democrateam/alan_turing/consul/lib/machine_learning/scr
     csv_writer.writerow([2, 3, "Proposal", "Resumen de comentarios de la propuesta con ID 3"])
     csv_writer.writerow([3, 4, "Proposal", "Resumen de comentarios de la propuesta con ID 4"])
 
-with open("/Users/julian/democrateam/alan_turing/consul/lib/machine_learning/scripts/machine_learning_tags_nmf.csv", mode="w") as csv_file:
+with open(os.getcwd() + "/lib/machine_learning/scripts/machine_learning_tags_nmf.csv", mode="w") as csv_file:
     csv_writer = csv.writer(csv_file, delimiter=";", quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
     csv_writer.writerow(["id", "name", "taggings_count", "kind"])
@@ -29,7 +30,7 @@ with open("/Users/julian/democrateam/alan_turing/consul/lib/machine_learning/scr
     csv_writer.writerow([2, "Tag ID 2", 30, ""])
     csv_writer.writerow([3, "Tag ID 3", 40, ""])
 
-with open("/Users/julian/democrateam/alan_turing/consul/lib/machine_learning/scripts/machine_learning_taggings_nmf.csv", mode="w") as csv_file:
+with open(os.getcwd() + "/lib/machine_learning/scripts/machine_learning_taggings_nmf.csv", mode="w") as csv_file:
     csv_writer = csv.writer(csv_file, delimiter=";", quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
     csv_writer.writerow(["tag_id", "taggable_id", "taggable_type"])
