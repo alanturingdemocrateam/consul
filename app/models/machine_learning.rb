@@ -25,6 +25,7 @@ class MachineLearning
       import_ml_taggins
 
       job.update!(finished_at: Time.current)
+      Mailer.machine_learning_success(@user).deliver_later
     rescue Exception => error
       handle_error(error)
       raise error
@@ -55,8 +56,8 @@ class MachineLearning
       if result == false
         job.update!(finished_at: Time.current, error: output)
         Mailer.machine_learning_error(@user).deliver_later
+        exit -1
       end
-      Mailer.machine_learning_success(@user).deliver_later
       result
     end
 
