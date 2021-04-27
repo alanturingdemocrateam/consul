@@ -134,7 +134,7 @@ class MachineLearning
     def handle_error(error)
       message = error.message
       backtrace = error.backtrace.select { |line| line.include?("machine_learning.rb") }
-      full_error = ([message] + backtrace).join("\n")
+      full_error = ([message] + backtrace).join("<br>")
       job.update!(finished_at: Time.current, error: full_error)
       Mailer.machine_learning_error(@user).deliver_later
     end

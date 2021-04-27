@@ -28,7 +28,7 @@
     <p>
       <strong><%= t("admin.machine_learning.executed_by") %></strong> <%= @machine_learning_job.user.name %><br>
       <strong><%= t("admin.machine_learning.script_name") %></strong> <%= @machine_learning_job.script %><br>
-      <strong><%= t("admin.machine_learning.error") %></strong> <%= sanitize(@machine_learning_job.error_message) %>
+      <strong><%= t("admin.machine_learning.error") %></strong> <%= sanitize(@machine_learning_job.error) %>
     </p>
   </div>
 <% elsif @machine_learning_job.finished? %>
