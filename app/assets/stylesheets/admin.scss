@@ -458,6 +458,49 @@ code {
   }
 }
 
+.button {
+
+  &.button-switch {
+    border-radius: $line-height;
+    font-weight: bold;
+    min-width: rem-calc(100);
+    position: relative;
+
+    &.switch-on,
+    &.switch-off {
+
+      &::after {
+        background: #fff;
+        border-radius: rem-calc(30);
+        content: "";
+        display: block;
+        height: 30px;
+        position: absolute;
+        top: 9px;
+        width: 30px;
+      }
+    }
+
+    &.switch-on {
+      background: #1779ba;
+      text-align: left;
+
+      &::after {
+        right: 9px;
+      }
+    }
+
+    &.switch-off {
+      background: #ddd;
+      text-align: right;
+
+      &::after {
+        left: 9px;
+      }
+    }
+  }
+}
+
 // 02. Sidebar
 // -----------
 

@@ -1,58 +1,6 @@
 <div class="tabs-panel is-active" id="panel_scripts">
   <% if machine_learning_job.finished? && !machine_learning_job.errored? %>
-    <div class="small-12 medium-6 large-4 column end">
-      <div class="card">
-        <div class="card-divider">
-          <h3><%= t("admin.machine_learning.comments_summary") %></h3>
-        </div>
-        <div class="card-section">
-          <p><%= t("admin.machine_learning.comments_summary_description") %></p>
-          <div class="switch large">
-            <input class="switch-input" id="ml_comments_summary" type="checkbox" name="ml_comments_summary">
-            <label class="switch-paddle" for="ml_comments_summary">
-              <span class="switch-active" aria-hidden="true"><%= t("shared.yes") %></span>
-              <span class="switch-inactive" aria-hidden="true"><%= t("shared.no") %></span>
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="small-12 medium-6 large-4 column end">
-      <div class="card">
-        <div class="card-divider">
-          <h3><%= t("admin.machine_learning.related_content") %></h3>
-        </div>
-        <div class="card-section">
-          <p><%= t("admin.machine_learning.related_content_description") %></p>
-          <div class="switch large">
-            <input class="switch-input" id="ml_related_content" type="checkbox" name="ml_related_content">
-            <label class="switch-paddle" for="ml_related_content">
-              <span class="switch-active" aria-hidden="true"><%= t("shared.yes") %></span>
-              <span class="switch-inactive" aria-hidden="true"><%= t("shared.no") %></span>
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="small-12 medium-6 large-4 column end">
-      <div class="card">
-        <div class="card-divider">
-          <h3><%= t("admin.machine_learning.tags") %></h3>
-        </div>
-        <div class="card-section">
-          <p><%= t("admin.machine_learning.tags_description") %></p>
-          <div class="switch large">
-            <input class="switch-input" id="ml_tags" type="checkbox" name="ml_tags">
-            <label class="switch-paddle" for="ml_tags">
-              <span class="switch-active" aria-hidden="true"><%= t("shared.yes") %></span>
-              <span class="switch-inactive" aria-hidden="true"><%= t("shared.no") %></span>
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
+    <%= render "settings" %>
 
     <%= link_to t("admin.machine_learning.delete_generated_content"),
                 delete_admin_machine_learning_path,

@@ -2,6 +2,7 @@ class Admin::MachineLearningController < Admin::BaseController
   before_action :load_machine_learning_job, only: :show
 
   def show
+    @machine_learning_settings = machine_learning_settings
   end
 
   def execute
@@ -36,5 +37,11 @@ class Admin::MachineLearningController < Admin::BaseController
       Setting["machine_learning.related_content"] = false,
       Setting["machine_learning.summary_comments"] = false,
       Setting["machine_learning.tags"] = false
+    end
+
+    def machine_learning_settings
+      [Setting.find_by(key: "machine_learning.related_content"),
+       Setting.find_by(key: "machine_learning.summary_comments"),
+       Setting.find_by(key: "machine_learning.tags")]
     end
 end
