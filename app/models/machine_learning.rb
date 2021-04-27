@@ -55,7 +55,6 @@ class MachineLearning
       result = $?.success?
       if result == false
         job.update!(finished_at: Time.current, error: output)
-        exit -1
         Mailer.machine_learning_error(user).deliver_later
       end
       result
