@@ -1,9 +1,8 @@
 class Proposal::Exporter
   require "csv"
 
-  def to_csv_file(filename = nil)
-    filename ||= "proposals.csv"
-    CSV.open(Rails.root.join(filename), "wb", headers: true) do |csv|
+  def to_csv_file(filename)
+    CSV.open(filename, "wb", headers: true) do |csv|
       csv << headers
       Proposal.find_each { |proposal| csv << csv_values(proposal) }
     end

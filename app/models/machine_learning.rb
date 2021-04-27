@@ -15,16 +15,19 @@ class MachineLearning
       MachineLearning.cleanup!
 
       export_proposals_to_csv
+      export_budget_investments_to_csv
       export_comments_to_csv
 
       return unless run_machine_learning_scripts
 
       import_ml_summary_comments
       import_proposals_related_content
+      import_budget_investments_related_content
       import_ml_tags
       import_ml_taggins
 
       job.update!(finished_at: Time.current)
+      Mailer.machine_learning_success(user).deliver_later
     rescue Exception => error
       handle_error(error)
       raise error
@@ -45,6 +48,10 @@ class MachineLearning
       Proposal::Exporter.new.to_csv_file full_path_for("proposals.csv")
     end
 
+    def export_budget_investments_to_csv
+      Budget::Investment::Exporter.new(Array.new).to_csv_file full_path_for("budget_investments.csv")
+    end
+
     def export_comments_to_csv
       Comment::Exporter.new.to_csv_file full_path_for("comments.csv")
     end
@@ -54,9 +61,8 @@ class MachineLearning
       result = $?.success?
       if result == false
         job.update!(finished_at: Time.current, error: output)
-        Mailer.machine_learning_error(@user).deliver_later
+        Mailer.machine_learning_error(user).deliver_later
       end
-      Mailer.machine_learning_success(@user).deliver_later
       result
     end
 
@@ -85,6 +91,26 @@ class MachineLearning
             parent_relationable_type: "Proposal",
             child_relationable_id: related_proposal_id,
             child_relationable_type: "Proposal"
+          }
+          unless RelatedContent.find_by(attributes)
+            RelatedContent.create!(attributes.merge(machine_learning: true, author: user))
+          end
+        end
+      end
+    end
+
+    def import_budget_investments_related_content
+      csv_file = full_path_for("machine_learning_budget_investments_related_nmf.csv")
+      CSV.foreach(csv_file, col_sep: ";", headers: false) do |line|
+        list = line.to_a
+        proposal_id = list.shift
+        list.reject! { |value| value.to_s.empty? }
+        list.each do |related_proposal_id|
+          attributes = {
+            parent_relationable_id: proposal_id,
+            parent_relationable_type: "Budget::Investment",
+            child_relationable_id: related_proposal_id,
+            child_relationable_type: "Budget::Investment"
           }
           unless RelatedContent.find_by(attributes)
             RelatedContent.create!(attributes.merge(machine_learning: true, author: user))
@@ -134,9 +160,9 @@ class MachineLearning
     def handle_error(error)
       message = error.message
       backtrace = error.backtrace.select { |line| line.include?("machine_learning.rb") }
-      full_error = ([message] + backtrace).join("\n")
+      full_error = ([message] + backtrace).join("<br>")
       job.update!(finished_at: Time.current, error: full_error)
-      Mailer.machine_learning_error(@user).deliver_later
+      Mailer.machine_learning_error(user).deliver_later
     end
 
     def full_path_for(filename)

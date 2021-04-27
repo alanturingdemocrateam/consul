@@ -1,9 +1,8 @@
 class Comment::Exporter
   require "csv"
 
-  def to_csv_file(filename = nil)
-    filename ||= "comments.csv"
-    CSV.open(Rails.root.join(filename), "wb", headers: true) do |csv|
+  def to_csv_file(filename)
+    CSV.open(filename, "wb", headers: true) do |csv|
       csv << headers
       Comment.find_each { |comment| csv << csv_values(comment) }
     end
