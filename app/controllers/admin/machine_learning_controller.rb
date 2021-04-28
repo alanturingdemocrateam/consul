@@ -34,8 +34,8 @@ class Admin::MachineLearningController < Admin::BaseController
     end
 
     def reset_machine_learning_settings
-      Setting["machine_learning.related_content"] = false,
-      Setting["machine_learning.summary_comments"] = false,
+      Setting["machine_learning.related_content"] = false
+      Setting["machine_learning.summary_comments"] = false
       Setting["machine_learning.tags"] = false
     end
 
