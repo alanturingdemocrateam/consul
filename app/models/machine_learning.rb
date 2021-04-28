@@ -14,9 +14,9 @@ class MachineLearning
     begin
       MachineLearning.cleanup!
 
-      export_proposals_to_csv
-      export_budget_investments_to_csv
-      export_comments_to_csv
+      export_proposals_to_json
+      export_budget_investments_to_json
+      export_comments_to_json
 
       return unless run_machine_learning_scripts
 
@@ -44,16 +44,16 @@ class MachineLearning
 
   private
 
-    def export_proposals_to_csv
-      Proposal::Exporter.new.to_csv_file full_path_for("proposals.csv")
+    def export_proposals_to_json
+      Proposal::Exporter.new.to_json_file full_path_for("proposals.json")
     end
 
-    def export_budget_investments_to_csv
-      Budget::Investment::Exporter.new(Array.new).to_csv_file full_path_for("budget_investments.csv")
+    def export_budget_investments_to_json
+      Budget::Investment::Exporter.new(Array.new).to_json_file full_path_for("budget_investments.json")
     end
 
-    def export_comments_to_csv
-      Comment::Exporter.new.to_csv_file full_path_for("comments.csv")
+    def export_comments_to_json
+      Comment::Exporter.new.to_json_file full_path_for("comments.json")
     end
 
     def run_machine_learning_scripts
@@ -67,10 +67,9 @@ class MachineLearning
     end
 
     def import_ml_summary_comments
-      csv_file = full_path_for("machine_learning_comments_textrank.csv")
-      CSV.foreach(csv_file, col_sep: ";", headers: true) do |line|
-        attributes = line.to_hash.deep_symbolize_keys!
-        attributes.delete(:id)
+      json_file = full_path_for("machine_learning_comments_textrank.json")
+      json_data = JSON.parse(File.read(json_file)).each(&:deep_symbolize_keys!)
+      json_data.each do |attributes|
         unless MlSummaryComment.find_by(commentable_id: attributes[:commentable_id],
                                         commentable_type: attributes[:commentable_type])
           MlSummaryComment.create!(attributes)
@@ -79,9 +78,9 @@ class MachineLearning
     end
 
     def import_proposals_related_content
-      csv_file = full_path_for("machine_learning_proposals_related_nmf.csv")
-      CSV.foreach(csv_file, col_sep: ";", headers: false) do |line|
-        list = line.to_a
+      json_file = full_path_for("machine_learning_proposals_related_nmf.json")
+      json_data = JSON.parse(File.read(json_file))
+      json_data.each do |list|
         proposal_id = list.shift
         list.reject! { |value| value.to_s.empty? }
         list.each do |related_proposal_id|
@@ -99,9 +98,9 @@ class MachineLearning
     end
 
     def import_budget_investments_related_content
-      csv_file = full_path_for("machine_learning_budget_investments_related_nmf.csv")
-      CSV.foreach(csv_file, col_sep: ";", headers: false) do |line|
-        list = line.to_a
+      json_file = full_path_for("machine_learning_budget_investments_related_nmf.json")
+      json_data = JSON.parse(File.read(json_file))
+      json_data.each do |list|
         proposal_id = list.shift
         list.reject! { |value| value.to_s.empty? }
         list.each do |related_proposal_id|
@@ -119,11 +118,10 @@ class MachineLearning
     end
 
     def import_ml_tags
-      csv_file = full_path_for("machine_learning_tags_nmf.csv")
-      CSV.foreach(csv_file, col_sep: ";", headers: true) do |line|
-        attributes = line.to_hash.deep_symbolize_keys!
+      json_file = full_path_for("machine_learning_tags_nmf.json")
+      json_data = JSON.parse(File.read(json_file)).each(&:deep_symbolize_keys!)
+      json_data.each do |attributes|
         ml_tag_id = attributes.delete(:id)
-        attributes.delete(:taggings_count)
         if attributes[:name].present?
           if attributes[:name].length >= 150
             attributes[:name] = attributes[:name].truncate(150)
@@ -137,9 +135,9 @@ class MachineLearning
     end
 
     def import_ml_taggins
-      csv_file = full_path_for("machine_learning_taggings_nmf.csv")
-      CSV.foreach(csv_file, col_sep: ";", headers: true) do |line|
-        attributes = line.to_hash.deep_symbolize_keys!
+      json_file = full_path_for("machine_learning_taggings_nmf.json")
+      json_data = JSON.parse(File.read(json_file)).each(&:deep_symbolize_keys!)
+      json_data.each do |attributes|
         ml_tag_id = attributes[:tag_id]
         attributes[:tag_id] = MlTag.find(ml_tag_id).tag_id
         attributes[:context] = "tags"

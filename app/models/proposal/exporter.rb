@@ -1,26 +1,23 @@
 class Proposal::Exporter
-  require "csv"
-
-  def to_csv_file(filename)
-    CSV.open(filename, "wb", headers: true) do |csv|
-      csv << headers
-      Proposal.find_each { |proposal| csv << csv_values(proposal) }
+  def to_json_file(filename)
+    proposals = []
+    Proposal.find_each do |proposal|
+      proposals << json_values(proposal)
+    end
+    File.open(filename, "w") do |file|
+      file.write(proposals.to_json)
     end
   end
 
   private
 
-    def headers
-      %w[id title summary description]
-    end
-
-    def csv_values(proposal)
-      [
-        proposal.id,
-        proposal.title,
-        strip_tags(proposal.summary),
-        strip_tags(proposal.description)
-      ]
+    def json_values(proposal)
+      {
+        id: proposal.id,
+        title: proposal.title,
+        summary: strip_tags(proposal.summary),
+        description: strip_tags(proposal.description)
+      }
     end
 
     def strip_tags(html_string)

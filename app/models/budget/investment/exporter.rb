@@ -12,12 +12,13 @@ class Budget::Investment::Exporter
     end
   end
 
-  def to_csv_file(filename)
-    CSV.open(filename, "wb", headers: true) do |csv|
-      csv << %w[id title description]
-      Budget::Investment.find_each do |investment|
-        csv << [investment.id, strip_tags(investment.title), strip_tags(investment.description)]
-      end
+  def to_json_file(filename)
+    investments = []
+    Budget::Investment.find_each do |investment|
+      investments << json_values(investment)
+    end
+    File.open(filename, "w") do |file|
+      file.write(investments.to_json)
     end
   end
 
@@ -72,6 +73,14 @@ class Budget::Investment::Exporter
       else
         I18n.t(price_string)
       end
+    end
+
+    def json_values(investment)
+      {
+        id: investment.id,
+        title: investment.title,
+        description: strip_tags(investment.description)
+      }
     end
 
     def strip_tags(html_string)
