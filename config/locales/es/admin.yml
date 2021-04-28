@@ -1662,5 +1662,5 @@ es:
       notice:
         success: "El contenido ha sido generado correctamente."
         error: "Se ha producido un error. Más información sobre el error a continuación."
-        working: "El script se está ejecutando. Recibirás un email a %{email} cuando termine."
+        working: "El script se está ejecutando. El administrador que lo ejecutó recibirá un email cuando termine."
         delete_generated_content: "El contenido generado se ha borrado correctamente."

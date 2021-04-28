@@ -1663,5 +1663,5 @@ en:
       notice:
         success: "Machine learning content has been generated successfully."
         error: "An error has occurred. You can see the details below."
-        working: "The script is running. You will receive an email to %{email} when it is finished."
+        working: "The script is running. The administrator who executed it will receive an email when it is finished."
         delete_generated_content: "Generated content has been successfully deleted."
