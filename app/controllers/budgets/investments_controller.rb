@@ -63,7 +63,7 @@ module Budgets
       load_investment_votes(@investment)
       @investment_ids = [@investment.id]
       @remote_translations = detect_remote_translations([@investment], @comment_tree.comments)
-      @ml_summary_comments = MlSummaryComment.where(commentable_id: @investment, commentable_type: "Budget::Investment").first
+      @ml_summary_comments = MlSummaryComment.find_by(commentable_id: @investment, commentable_type: "Budget::Investment")
     end
 
     def create

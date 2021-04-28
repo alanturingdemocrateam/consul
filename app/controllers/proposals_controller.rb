@@ -30,7 +30,7 @@ class ProposalsController < ApplicationController
     @notifications = @proposal.notifications
     @notifications = @proposal.notifications.not_moderated
     @related_contents = Kaminari.paginate_array(@proposal.relationed_contents).page(params[:page]).per(5)
-    @ml_summary_comments = MlSummaryComment.where(commentable_id: @proposal, commentable_type: "Proposal").first
+    @ml_summary_comments = MlSummaryComment.find_by(commentable_id: @proposal, commentable_type: "Proposal")
 
     if request.path != proposal_path(@proposal)
       redirect_to proposal_path(@proposal), status: :moved_permanently
