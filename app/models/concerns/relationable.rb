@@ -13,12 +13,10 @@ module Relationable
   end
 
   def relationed_contents
-    if Setting["machine_learning.related_content"]
-      related_contents.not_hidden.map(&:child_relationable)
-                      .reject { |related| related.respond_to?(:retired?) && related.retired? }
-    else
-      related_contents.not_hidden.from_users.map(&:child_relationable)
-                      .reject { |related| related.respond_to?(:retired?) && related.retired? }
+    related_content = related_contents.not_hidden
+    related_content = related_content.from_users unless Setting["machine_learning.related_content"]
+    related_content.map(&:child_relationable).reject do |related|
+      related.respond_to?(:retired?) && related.retired?
     end
   end
 end
