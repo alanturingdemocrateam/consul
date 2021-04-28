@@ -14,12 +14,18 @@ class Shared::TagListComponent < ApplicationComponent
     end
 
     def tag_links
-      taggable.tag_list_with_limit(limit).map do |tag|
+      taggable_list = taggable.tag_list_with_limit(limit)
+      taggable_list = taggable_list.where.not(id: ml_tags) unless Setting["machine_learning.tags"]
+      taggable_list.map do |tag|
         [
           sanitize(tag.name),
           taggables_path(taggable, tag.name)
         ]
       end
+    end
+
+    def ml_tags
+      MlTag.all.map(&:tag_id)
     end
 
     def see_more_link
