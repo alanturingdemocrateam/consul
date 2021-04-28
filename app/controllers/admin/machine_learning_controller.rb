@@ -40,8 +40,6 @@ class Admin::MachineLearningController < Admin::BaseController
     end
 
     def machine_learning_settings
-      [Setting.find_by(key: "machine_learning.related_content"),
-       Setting.find_by(key: "machine_learning.summary_comments"),
-       Setting.find_by(key: "machine_learning.tags")]
+      Setting.select { |setting| setting.key.start_with?("machine_learning.") }
     end
 end
