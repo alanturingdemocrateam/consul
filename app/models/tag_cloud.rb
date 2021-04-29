@@ -22,7 +22,7 @@ class TagCloud
   end
 
   def ml_tags
-    MlTag.all.map(&:tag_id)
+    MlTag.pluck(:tag_id)
   end
 
   def resource_model_scoped

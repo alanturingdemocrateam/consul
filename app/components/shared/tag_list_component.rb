@@ -25,7 +25,7 @@ class Shared::TagListComponent < ApplicationComponent
     end
 
     def ml_tags
-      MlTag.all.map(&:tag_id)
+      MlTag.pluck(:tag_id)
     end
 
     def see_more_link

@@ -1,5 +1,5 @@
 <% if feature?(:machine_learning) && Setting["machine_learning.summary_comments"] %>
-  <% if @ml_summary_comments.present? %>
+  <% if @ml_summary_comments&.body.present? %>
     <div class="row column margin-bottom">
       <p>
         <strong><%= t("machine_learning.summary_comments") %></strong>
