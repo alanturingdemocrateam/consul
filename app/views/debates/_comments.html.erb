@@ -6,6 +6,8 @@
         <span class="js-comments-count">(<%= @debate.comments_count %>)</span>
       </h3>
 
+      <%= render "shared/machine_learning_summary_comments" %>
+
       <%= render "shared/wide_order_selector", i18n_namespace: "comments" %>
 
       <% if user_signed_in? %>
