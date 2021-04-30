@@ -3,7 +3,10 @@ require "rails_helper"
 describe "Machine learning" do
   let(:admin) { create(:administrator) }
 
-  before { login_as(admin.user) }
+  before do
+    login_as(admin.user)
+    Setting["feature.machine_learning"] = true
+  end
 
   scenario "Section only appears if feature is enabled" do
     Setting["feature.machine_learning"] = false
@@ -29,6 +32,16 @@ describe "Machine learning" do
     expect(page).to have_link "Machine learning scripts"
     expect(page).to have_link "Help about machine learning"
     expect(page).to have_current_path(admin_machine_learning_path)
+  end
+
+  scenario "Show message if feature is disabled" do
+    Setting["feature.machine_learning"] = false
+
+    visit admin_machine_learning_path
+
+    expect(page).to have_content "This feature is disabled. To use Machine Learning you can enable it from "\
+                                 "the settings page"
+    expect(page).to have_link("settings page", href: admin_settings_path(anchor: "tab-feature-flags"))
   end
 
   scenario "Script executed sucessfully" do

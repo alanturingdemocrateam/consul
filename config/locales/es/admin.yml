@@ -1656,6 +1656,8 @@ es:
       script_name: "Nombre del script:"
       error: "Error:"
       started_at: "Empezado a las:"
+      feature_disabled: "Esta funcionalidad está deshabilitada. Para utilizar Machine Learning puedes habilitarla desde la %{link}."
+      feature_disabled_link: "página de configuración"
       help:
         title: "Cómo funciona el the machine learning"
         scripts: "La lista para los scripts disponibles es generada por los archivos ubicados en la carpeta <code>lib/machine_learning/scripts</code>."
