@@ -1,7 +1,7 @@
 require "rails_helper"
 
 describe "Machine learning" do
-  let!(:admin) { create(:administrator, user: create(:user)) }
+  let(:admin) { create(:administrator) }
 
   before { login_as(admin.user) }
 
@@ -11,7 +11,7 @@ describe "Machine learning" do
     visit admin_root_path
 
     within "#admin_menu" do
-     expect(page).not_to have_link "Machine learning"
+      expect(page).not_to have_link "Machine learning"
     end
 
     Setting["feature.machine_learning"] = true
@@ -19,7 +19,7 @@ describe "Machine learning" do
     visit admin_root_path
 
     within "#admin_menu" do
-     expect(page).to have_link "Machine learning"
+      expect(page).to have_link "Machine learning"
     end
 
     click_link "Machine learning"
@@ -31,27 +31,19 @@ describe "Machine learning" do
     expect(page).to have_current_path(admin_machine_learning_path)
   end
 
-  scenario "Admin can execute a script" do
-    Setting["feature.machine_learning"] = false
-
+  scenario "Script executed sucessfully" do
     visit admin_machine_learning_path
 
     expect(page).to have_content "You will receive an email in #{admin.email} when the script finishes running. "\
                                  "You can then select which generated content you want to display."
     expect(page).to have_content "Select pyhton script to execute"
 
+    allow_any_instance_of(MachineLearning).to receive(:run) do
+      MachineLearningJob.first.update! finished_at: Time.current
+    end
+
     select "script.py", from: :script
-    expect(page).to have_button "Execute script"
-
-    # TODO
-    # visit admin_machine_learning_path
-    # expect(page).to have_content "Machine learning content has been generated successfully"
-  end
-
-  scenario "Sucessfull script message" do
-    create(:machine_learning_job)
-
-    visit admin_machine_learning_path
+    click_button "Execute script"
 
     expect(page).to have_content "Machine learning content has been generated successfully"
 
@@ -73,14 +65,18 @@ describe "Machine learning" do
     expect(page).not_to have_button "Execute script"
   end
 
-  scenario "Working script message" do
-    job = create(:machine_learning_job, :working)
-
+  scenario "Script started but not finished yet" do
     visit admin_machine_learning_path
+
+    allow_any_instance_of(MachineLearning).to receive(:run)
+
+    select "script.py", from: :script
+    click_button "Execute script"
 
     expect(page).to have_content "The script is running. The administrator who executed it will receive an email "\
                                  "when it is finished."
 
+    job = MachineLearningJob.first
     expect(page).to have_content "Executed by: #{job.user.name}"
     expect(page).to have_content "Script name: #{job.script}"
     expect(page).to have_content "Started at: #{job.started_at}"
@@ -89,13 +85,43 @@ describe "Machine learning" do
     expect(page).not_to have_button "Execute script"
   end
 
-  scenario "Error script message and form to execute again" do
-    job = create(:machine_learning_job, :with_error)
-
+  scenario "Admin can cancel operation if script is working for too long" do
     visit admin_machine_learning_path
+
+    allow_any_instance_of(MachineLearning).to receive(:run) do
+      MachineLearningJob.first.update! started_at: 25.hours.ago
+    end
+
+    select "script.py", from: :script
+    click_button "Execute script"
+
+    accept_confirm { click_link "Cancel operation" }
+
+    expect(page).to have_content "Generated content has been successfully deleted."
+
+    expect(page).to have_content "Select pyhton script to execute"
+    expect(page).to have_button "Execute script"
+
+    expect(Delayed::Job.where(queue: "machine_learning")).to be_empty
+
+    expect(Setting["machine_learning.related_content"]).to be nil
+    expect(Setting["machine_learning.summary_comments"]).to be nil
+    expect(Setting["machine_learning.tags"]).to be nil
+  end
+
+  scenario "Script finished with an error" do
+    visit admin_machine_learning_path
+
+    allow_any_instance_of(MachineLearning).to receive(:run) do
+      MachineLearningJob.first.update! finished_at: Time.current, error: "Error description"
+    end
+
+    select "script.py", from: :script
+    click_button "Execute script"
 
     expect(page).to have_content "An error has occurred. You can see the details below."
 
+    job = MachineLearningJob.first
     expect(page).to have_content "Executed by: #{job.user.name}"
     expect(page).to have_content "Script name: #{job.script}"
     expect(page).to have_content "Error: Error description"
@@ -107,50 +133,21 @@ describe "Machine learning" do
     expect(page).to have_button "Execute script"
   end
 
-  scenario "Send email to user who execute the script when finish" do
-    user = create(:user)
-    create(:administrator, user: user)
-    create(:machine_learning_job, user: user)
-
-    reset_mailer
-    Mailer.machine_learning_success(user).deliver
-
-    email = open_last_email
-    expect(email).to have_subject "Machine Learning - Content has been generated successfully"
-    expect(email).to have_content "Machine Learning script"
-    expect(email).to have_content "Content has been generated successfully."
-    expect(email).to have_link "Visit Machine Learning panel"
-    expect(email).to deliver_to(user.email)
-
-    create(:machine_learning_job, :with_error, user: user)
-
-    reset_mailer
-    Mailer.machine_learning_error(user).deliver
-
-    email = open_last_email
-    expect(email).to have_subject "Machine Learning - An error has occurred running the script"
-    expect(email).to have_content "Machine Learning script"
-    expect(email).to have_content "An error has occurred running the Machine Learning script."
-    expect(email).to have_link "Visit Machine Learning panel"
-    expect(email).to deliver_to(user.email)
-  end
-
-  scenario "Machine Learning settings are disabled by default" do
-    create(:machine_learning_job)
-
-    visit admin_machine_learning_path
-
-    expect(page).to have_button("No", count: 3)
-
-    expect(Setting["machine_learning.related_content"]).to eq nil
-    expect(Setting["machine_learning.summary_comments"]).to eq nil
-    expect(Setting["machine_learning.tags"]).to eq nil
-  end
-
   scenario "Admin can delete Machine Learning generated content" do
-    create(:machine_learning_job)
+    Setting["machine_learning.related_content"] = true
+    Setting["machine_learning.summary_comments"] = true
+    Setting["machine_learning.tags"] = true
 
     visit admin_machine_learning_path
+
+    allow_any_instance_of(MachineLearning).to receive(:run) do
+      MachineLearningJob.first.update! finished_at: Time.current
+    end
+
+    select "script.py", from: :script
+    click_button "Execute script"
+
+    expect(page).to have_content "Machine learning content has been generated successfully"
 
     accept_confirm { click_link "Delete generated content" }
 
@@ -158,5 +155,52 @@ describe "Machine learning" do
 
     expect(page).to have_content "Select pyhton script to execute"
     expect(page).to have_button "Execute script"
+
+    expect(Delayed::Job.where(queue: "machine_learning")).to be_empty
+
+    expect(Setting["machine_learning.related_content"]).to be nil
+    expect(Setting["machine_learning.summary_comments"]).to be nil
+    expect(Setting["machine_learning.tags"]).to be nil
+  end
+
+  scenario "Email content received by the user who execute the script" do
+    reset_mailer
+    Mailer.machine_learning_success(admin.user).deliver
+
+    email = open_last_email
+    expect(email).to have_subject "Machine Learning - Content has been generated successfully"
+    expect(email).to have_content "Machine Learning script"
+    expect(email).to have_content "Content has been generated successfully."
+    expect(email).to have_link "Visit Machine Learning panel"
+    expect(email).to deliver_to(admin.user.email)
+
+    reset_mailer
+    Mailer.machine_learning_error(admin.user).deliver
+
+    email = open_last_email
+    expect(email).to have_subject "Machine Learning - An error has occurred running the script"
+    expect(email).to have_content "Machine Learning script"
+    expect(email).to have_content "An error has occurred running the Machine Learning script."
+    expect(email).to have_link "Visit Machine Learning panel"
+    expect(email).to deliver_to(admin.user.email)
+  end
+
+  scenario "Machine Learning visualization settings are disabled by default" do
+    visit admin_machine_learning_path
+
+    allow_any_instance_of(MachineLearning).to receive(:run) do
+      MachineLearningJob.first.update! finished_at: Time.current
+    end
+
+    select "script.py", from: :script
+    click_button "Execute script"
+
+    expect(page).to have_content "Machine learning content has been generated successfully"
+
+    expect(page).to have_button("No", count: 3)
+
+    expect(Setting["machine_learning.related_content"]).to eq nil
+    expect(Setting["machine_learning.summary_comments"]).to eq nil
+    expect(Setting["machine_learning.tags"]).to eq nil
   end
 end

@@ -15,9 +15,9 @@ describe "Machine learning" do
   scenario "Show Machine Learning summary comments correctly" do
     budget = create(:budget)
     investment = create(:budget_investment, budget: budget)
-    ml_summary_comment_debate = create(:ml_summary_comment, :debate, commentable_id: debate.id)
-    ml_summary_comment_proposal = create(:ml_summary_comment, :proposal, commentable_id: proposal.id)
-    ml_summary_comment_investment = create(:ml_summary_comment, :investment, commentable_id: investment.id)
+    ml_summary_comment_debate = create(:ml_summary_comment, commentable: debate)
+    ml_summary_comment_proposal = create(:ml_summary_comment, commentable: proposal)
+    ml_summary_comment_investment = create(:ml_summary_comment, commentable: investment)
 
     visit debate_path(debate)
 

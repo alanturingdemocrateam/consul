@@ -41,6 +41,10 @@ FactoryBot.define do
     association :author, factory: :user
     association :parent_relationable, factory: [:proposal, :debate].sample
     association :child_relationable, factory: [:proposal, :debate].sample
+
+    trait :from_machine_learning do
+      machine_learning { true }
+    end
   end
 
   factory :related_content_score do
