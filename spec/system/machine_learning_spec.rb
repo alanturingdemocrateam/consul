@@ -70,46 +70,41 @@ describe "Machine learning" do
     end
   end
 
-  scenario "Show Machine Learning related content correctly" do
-    proposal = create(:proposal)
-    proposal2 = create(:proposal)
+  scenario "Show Machine Learning related content correctly on debates" do
     debate = create(:debate)
     debate2 = create(:debate)
-    budget = create(:budget)
-    investment = create(:budget_investment, budget: budget)
-    investment2 = create(:budget_investment, budget: budget)
 
-    create(:related_content, parent_relationable: proposal, child_relationable: debate)
-    create(:related_content, parent_relationable: investment, child_relationable: debate)
-    create(:related_content, parent_relationable: proposal, child_relationable: debate2, machine_learning: true)
-    create(:related_content, parent_relationable: proposal, child_relationable: proposal2, machine_learning: true)
-    create(:related_content, parent_relationable: investment, child_relationable: proposal2, machine_learning: true)
-    create(:related_content, parent_relationable: investment, child_relationable: investment2, machine_learning: true)
     create(:related_content, parent_relationable: debate, child_relationable: debate2, machine_learning: true)
-
-    visit proposal_path(proposal)
-
-    within ".related-content" do
-      expect(page).to have_content "Related content (1)"
-      expect(page).to have_selector(".related-content-title", count: 1)
-      expect(page).to have_content "#{debate.title}"
-    end
 
     visit debate_path(debate)
 
     within ".related-content" do
-      expect(page).to have_content "Related content (2)"
-      expect(page).to have_selector(".related-content-title", count: 2)
-      expect(page).to have_content "#{proposal.title}"
-      expect(page).to have_content "#{investment.title}"
+      expect(page).to have_content "Related content (0)"
+      expect(page).not_to have_selector ".related-content-title"
     end
 
-    visit budget_investment_path(budget, investment)
+    Setting["machine_learning.related_content"] = true
+
+    visit debate_path(debate)
 
     within ".related-content" do
       expect(page).to have_content "Related content (1)"
       expect(page).to have_selector(".related-content-title", count: 1)
-      expect(page).to have_content "#{debate.title}"
+      expect(page).to have_content "#{debate2.title}"
+    end
+  end
+
+  scenario "Show Machine Learning related content correctly on proposals" do
+    proposal = create(:proposal)
+    proposal2 = create(:proposal)
+
+    create(:related_content, parent_relationable: proposal, child_relationable: proposal2, machine_learning: true)
+
+    visit proposal_path(proposal)
+
+    within ".related-content" do
+      expect(page).to have_content "Related content (0)"
+      expect(page).not_to have_selector ".related-content-title"
     end
 
     Setting["machine_learning.related_content"] = true
@@ -117,30 +112,32 @@ describe "Machine learning" do
     visit proposal_path(proposal)
 
     within ".related-content" do
-      expect(page).to have_content "Related content (3)"
-      expect(page).to have_selector(".related-content-title", count: 3)
-      expect(page).to have_content "#{debate.title}"
-      expect(page).to have_content "#{debate2.title}"
+      expect(page).to have_content "Related content (1)"
+      expect(page).to have_selector(".related-content-title", count: 1)
       expect(page).to have_content "#{proposal2.title}"
     end
+  end
 
-    visit debate_path(debate)
+  scenario "Show Machine Learning related content correctly on investments" do
+    budget = create(:budget)
+    investment = create(:budget_investment, budget: budget)
+    investment2 = create(:budget_investment, budget: budget)
+
+    create(:related_content, parent_relationable: investment, child_relationable: investment2, machine_learning: true)
+    visit budget_investment_path(budget, investment)
 
     within ".related-content" do
-      expect(page).to have_content "Related content (3)"
-      expect(page).to have_selector(".related-content-title", count: 3)
-      expect(page).to have_content "#{proposal.title}"
-      expect(page).to have_content "#{investment.title}"
-      expect(page).to have_content "#{debate2.title}"
+      expect(page).to have_content "Related content (0)"
+      expect(page).not_to have_selector ".related-content-title"
     end
+
+    Setting["machine_learning.related_content"] = true
 
     visit budget_investment_path(budget, investment)
 
     within ".related-content" do
-      expect(page).to have_content "Related content (3)"
-      expect(page).to have_selector(".related-content-title", count: 3)
-      expect(page).to have_content "#{debate.title}"
-      expect(page).to have_content "#{proposal2.title}"
+      expect(page).to have_content "Related content (1)"
+      expect(page).to have_selector(".related-content-title", count: 1)
       expect(page).to have_content "#{investment2.title}"
     end
   end
