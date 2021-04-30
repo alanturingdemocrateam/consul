@@ -27,7 +27,6 @@ class DebatesController < ApplicationController
     super
     @related_contents = Kaminari.paginate_array(@debate.relationed_contents).page(params[:page]).per(5)
     redirect_to debate_path(@debate), status: :moved_permanently if request.path != debate_path(@debate)
-    @ml_summary_comments = MlSummaryComment.find_by(commentable_id: @debate, commentable_type: "Debate")
   end
 
   def vote
