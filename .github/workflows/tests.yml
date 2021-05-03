@@ -1,11 +1,7 @@
 name: tests
 on:
-  push:
-    branches:
-      - master
   pull_request:
-    branches-ignore:
-      - i18n_master
+  workflow_dispatch:
 
 jobs:
   tests:
