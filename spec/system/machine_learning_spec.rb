@@ -88,7 +88,9 @@ describe "Machine learning" do
 
   describe "Related content" do
     scenario "is displayed for debates if setting is enabled" do
-      create(:related_content, parent_relationable: debate, child_relationable: related_debate, machine_learning: true)
+      create(:related_content, parent_relationable: debate,
+                               child_relationable: related_debate,
+                               machine_learning: true)
 
       visit debate_path(debate)
 
@@ -109,7 +111,9 @@ describe "Machine learning" do
     end
 
     scenario "is displayed for proposals if setting is enabled" do
-      create(:related_content, parent_relationable: proposal, child_relationable: related_proposal, machine_learning: true)
+      create(:related_content, parent_relationable: proposal,
+                               child_relationable: related_proposal,
+                               machine_learning: true)
 
       visit proposal_path(proposal)
 
@@ -130,7 +134,9 @@ describe "Machine learning" do
     end
 
     scenario "is displayed for budget investments if setting is enabled" do
-      create(:related_content, parent_relationable: investment, child_relationable: related_investment, machine_learning: true)
+      create(:related_content, parent_relationable: investment,
+                               child_relationable: related_investment,
+                               machine_learning: true)
       visit budget_investment_path(budget, investment)
 
       within ".related-content" do

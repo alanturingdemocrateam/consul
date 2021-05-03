@@ -47,8 +47,8 @@ describe "Machine learning" do
   scenario "Script executed sucessfully" do
     visit admin_machine_learning_path
 
-    expect(page).to have_content "You will receive an email in #{admin.email} when the script finishes running. "\
-                                 "You can then select which generated content you want to display."
+    expect(page).to have_content "You will receive an email in #{admin.email} when the script finishes "\
+                                 "running. You can then select which generated content you want to display."
     expect(page).to have_content "Select pyhton script to execute"
 
     allow_any_instance_of(MachineLearning).to receive(:run) do
@@ -86,8 +86,8 @@ describe "Machine learning" do
     select "script.py", from: :script
     click_button "Execute script"
 
-    expect(page).to have_content "The script is running. The administrator who executed it will receive an email "\
-                                 "when it is finished."
+    expect(page).to have_content "The script is running. The administrator who executed it will receive "\
+                                 "an email when it is finished."
 
     job = MachineLearningJob.first
     expect(page).to have_content "Executed by: #{job.user.name}"
@@ -139,8 +139,8 @@ describe "Machine learning" do
     expect(page).to have_content "Script name: #{job.script}"
     expect(page).to have_content "Error: Error description"
 
-    expect(page).to have_content "You will receive an email in #{admin.email} when the script finishes running. "\
-                                 "You can then select which generated content you want to display."
+    expect(page).to have_content "You will receive an email in #{admin.email} when the script finishes "\
+                                 "running. You can then select which generated content you want to display."
 
     expect(page).to have_content "Select pyhton script to execute"
     expect(page).to have_button "Execute script"

@@ -1,6 +1,10 @@
 require "rails_helper"
 
 describe MachineLearning do
+  def full_sanitizer(string)
+    ActionView::Base.full_sanitizer.sanitize(string)
+  end
+
   let(:job) { create :machine_learning_job }
 
   describe ".cleanup!" do
@@ -45,13 +49,13 @@ describe MachineLearning do
 
       expect(json.first["id"]).to eq first_proposal.id
       expect(json.first["title"]).to eq first_proposal.title
-      expect(json.first["summary"]).to eq ActionView::Base.full_sanitizer.sanitize(first_proposal.summary)
-      expect(json.first["description"]).to eq ActionView::Base.full_sanitizer.sanitize(first_proposal.description)
+      expect(json.first["summary"]).to eq full_sanitizer(first_proposal.summary)
+      expect(json.first["description"]).to eq full_sanitizer(first_proposal.description)
 
       expect(json.last["id"]).to eq last_proposal.id
       expect(json.last["title"]).to eq last_proposal.title
-      expect(json.last["summary"]).to eq ActionView::Base.full_sanitizer.sanitize(last_proposal.summary)
-      expect(json.last["description"]).to eq ActionView::Base.full_sanitizer.sanitize(last_proposal.description)
+      expect(json.last["summary"]).to eq full_sanitizer(last_proposal.summary)
+      expect(json.last["description"]).to eq full_sanitizer(last_proposal.description)
     end
   end
 
@@ -71,11 +75,11 @@ describe MachineLearning do
 
       expect(json.first["id"]).to eq first_budget_investment.id
       expect(json.first["title"]).to eq first_budget_investment.title
-      expect(json.first["description"]).to eq ActionView::Base.full_sanitizer.sanitize(first_budget_investment.description)
+      expect(json.first["description"]).to eq full_sanitizer(first_budget_investment.description)
 
       expect(json.last["id"]).to eq last_budget_investment.id
       expect(json.last["title"]).to eq last_budget_investment.title
-      expect(json.last["description"]).to eq ActionView::Base.full_sanitizer.sanitize(last_budget_investment.description)
+      expect(json.last["description"]).to eq full_sanitizer(last_budget_investment.description)
     end
   end
 
@@ -96,12 +100,12 @@ describe MachineLearning do
       expect(json.first["id"]).to eq first_comment.id
       expect(json.first["commentable_id"]).to eq first_comment.commentable_id
       expect(json.first["commentable_type"]).to eq first_comment.commentable_type
-      expect(json.first["body"]).to eq ActionView::Base.full_sanitizer.sanitize(first_comment.body)
+      expect(json.first["body"]).to eq full_sanitizer(first_comment.body)
 
       expect(json.last["id"]).to eq last_comment.id
       expect(json.last["commentable_id"]).to eq last_comment.commentable_id
       expect(json.last["commentable_type"]).to eq last_comment.commentable_type
-      expect(json.last["body"]).to eq ActionView::Base.full_sanitizer.sanitize(last_comment.body)
+      expect(json.last["body"]).to eq full_sanitizer(last_comment.body)
     end
   end
 
@@ -165,7 +169,8 @@ describe MachineLearning do
           body: "Summary comment for investment with ID #{investment.id}" }
       ]
 
-      json_file = machine_learning.send(:full_path_for, "machine_learning_comments_textrank.json")
+      filename = "machine_learning_comments_textrank.json"
+      json_file = machine_learning.send(:full_path_for, filename)
       expect(File).to receive(:read).with(json_file).and_return data.to_json
 
       machine_learning.send(:import_ml_summary_comments)
@@ -188,7 +193,8 @@ describe MachineLearning do
         [proposal.id, related_proposal.id, other_related_proposal.id]
       ]
 
-      json_file = machine_learning.send(:full_path_for, "machine_learning_proposals_related_nmf.json")
+      filename = "machine_learning_proposals_related_nmf.json"
+      json_file = machine_learning.send(:full_path_for, filename)
       expect(File).to receive(:read).with(json_file).and_return data.to_json
 
       machine_learning.send(:import_proposals_related_content)
@@ -211,7 +217,8 @@ describe MachineLearning do
         [investment.id, related_investment.id, other_related_investment.id]
       ]
 
-      json_file = machine_learning.send(:full_path_for, "machine_learning_budget_investments_related_nmf.json")
+      filename = "machine_learning_budget_investments_related_nmf.json"
+      json_file = machine_learning.send(:full_path_for, filename)
       expect(File).to receive(:read).with(json_file).and_return data.to_json
 
       machine_learning.send(:import_budget_investments_related_content)
@@ -233,7 +240,8 @@ describe MachineLearning do
           name: "Machine learning TAG 2" }
       ]
 
-      json_file = machine_learning.send(:full_path_for, "machine_learning_tags_nmf.json")
+      filename = "machine_learning_tags_nmf.json"
+      json_file = machine_learning.send(:full_path_for, filename)
       expect(File).to receive(:read).with(json_file).and_return data.to_json
 
       machine_learning.send(:import_ml_tags)
@@ -272,7 +280,8 @@ describe MachineLearning do
           taggable_type: "Budget::Investment" }
       ]
 
-      json_file = machine_learning.send(:full_path_for, "machine_learning_taggings_nmf.json")
+      filename = "machine_learning_taggings_nmf.json"
+      json_file = machine_learning.send(:full_path_for, filename)
       expect(File).to receive(:read).with(json_file).and_return data.to_json
 
       machine_learning.send(:import_ml_taggins)

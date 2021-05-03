@@ -24,7 +24,8 @@ class Admin::MachineLearningController < Admin::BaseController
     MachineLearning.cleanup!
     MachineLearningJob.destroy_all
 
-    redirect_to admin_machine_learning_path, notice: t("admin.machine_learning.notice.delete_generated_content")
+    redirect_to admin_machine_learning_path,
+                notice: t("admin.machine_learning.notice.delete_generated_content")
   end
 
   private
