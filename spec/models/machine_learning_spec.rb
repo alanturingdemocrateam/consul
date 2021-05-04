@@ -110,13 +110,12 @@ describe MachineLearning do
   end
 
   describe "#run_machine_learning_scripts" do
-    it "returns true if python script executed correclty" do
+    it "returns true if python script executed correctly" do
       machine_learning = MachineLearning.new(job)
 
       python_script = machine_learning.send(:full_path_for, "script.py")
       expect(machine_learning).to receive(:`).with("python #{python_script} 2>&1") do
-        fork { exit 0 }
-        Process.wait
+        Process.waitpid Process.fork { exit 0 }
       end
 
       expect(Mailer).not_to receive(:machine_learning_error)
@@ -133,8 +132,7 @@ describe MachineLearning do
 
       python_script = machine_learning.send(:full_path_for, "script.py")
       expect(machine_learning).to receive(:`).with("python #{python_script} 2>&1") do
-        fork { abort "error message" }
-        Process.wait
+        Process.waitpid Process.fork { abort "error message" }
       end
 
       mailer = double("mailer")
