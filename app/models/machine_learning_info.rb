@@ -1,0 +1,2 @@
+class MachineLearningInfo < ApplicationRecord
+end

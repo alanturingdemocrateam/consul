@@ -72,7 +72,6 @@ describe "Machine learning" do
     expect(page).to have_content "Generates automatic tags for proposals replacing those added by users."
 
     expect(page).to have_button("No", count: 3)
-    expect(page).to have_link "Delete generated content"
 
     expect(page).not_to have_content "Select pyhton script to execute"
     expect(page).not_to have_button "Execute script"
@@ -144,36 +143,6 @@ describe "Machine learning" do
 
     expect(page).to have_content "Select pyhton script to execute"
     expect(page).to have_button "Execute script"
-  end
-
-  scenario "Admin can delete Machine Learning generated content" do
-    Setting["machine_learning.related_content"] = true
-    Setting["machine_learning.summary_comments"] = true
-    Setting["machine_learning.tags"] = true
-
-    visit admin_machine_learning_path
-
-    allow_any_instance_of(MachineLearning).to receive(:run) do
-      MachineLearningJob.first.update! finished_at: Time.current
-    end
-
-    select "script.py", from: :script
-    click_button "Execute script"
-
-    expect(page).to have_content "Machine learning content has been generated successfully"
-
-    accept_confirm { click_link "Delete generated content" }
-
-    expect(page).to have_content "Generated content has been successfully deleted."
-
-    expect(page).to have_content "Select pyhton script to execute"
-    expect(page).to have_button "Execute script"
-
-    expect(Delayed::Job.where(queue: "machine_learning")).to be_empty
-
-    expect(Setting["machine_learning.related_content"]).to be nil
-    expect(Setting["machine_learning.summary_comments"]).to be nil
-    expect(Setting["machine_learning.tags"]).to be nil
   end
 
   scenario "Email content received by the user who execute the script" do

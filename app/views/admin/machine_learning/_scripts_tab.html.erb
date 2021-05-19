@@ -1,14 +1,9 @@
 <div class="tabs-panel is-active" id="panel_scripts">
   <% if machine_learning_job.finished? && !machine_learning_job.errored? %>
     <%= render "settings" %>
-
-    <%= link_to t("admin.machine_learning.delete_generated_content"),
-                delete_admin_machine_learning_path,
-                method: :post, class: "delete",
-                data: { confirm: t("admin.machine_learning.delete_generated_content_alert") } %>
   <% elsif machine_learning_job.running_for_too_long? %>
     <%= link_to t("admin.machine_learning.cancel"),
-                delete_admin_machine_learning_path,
+                cancel_admin_machine_learning_path,
                 method: :post, class: "button hollow alert",
                 data: { confirm: t("admin.machine_learning.cancel_alert") } %>
   <% elsif machine_learning_job.errored? || !machine_learning_job.started? %>

@@ -7,8 +7,8 @@ describe MachineLearning do
 
   let(:job) { create :machine_learning_job }
 
-  describe ".cleanup!" do
-    it "deletes all machine learning generated content" do
+  describe "#cleanup_tags!" do
+    it "deletes tags machine learning generated data" do
       create :ml_summary_comment, commentable: create(:proposal)
       create :related_content, :from_machine_learning
       tag = create(:tag)
@@ -22,14 +22,69 @@ describe MachineLearning do
       expect(Tagging.count).to be 1
       expect(MlTagging.count).to be 1
 
-      MachineLearning.cleanup!
+      machine_learning = MachineLearning.new(job)
+      machine_learning.send(:cleanup_tags!)
 
-      expect(MlSummaryComment.all).to be_empty
-      expect(RelatedContent.from_machine_learning).to be_empty
+      expect(MlSummaryComment.count).to be 1
+      expect(RelatedContent.from_machine_learning.count).to be 2
       expect(Tag.all).to be_empty
       expect(MlTag.all).to be_empty
       expect(Tagging.all).to be_empty
       expect(MlTagging.all).to be_empty
+    end
+  end
+
+  describe "#cleanup_related_content!" do
+    it "deletes related content machine learning generated data" do
+      create :ml_summary_comment, commentable: create(:proposal)
+      create :related_content, :from_machine_learning
+      tag = create(:tag)
+      MlTag.create!(tag: tag)
+      MlTagging.create!(tagging: create(:tagging, tag: tag))
+
+      expect(MlSummaryComment.count).to be 1
+      expect(RelatedContent.from_machine_learning.count).to be 2
+      expect(Tag.count).to be 1
+      expect(MlTag.count).to be 1
+      expect(Tagging.count).to be 1
+      expect(MlTagging.count).to be 1
+
+      machine_learning = MachineLearning.new(job)
+      machine_learning.send(:cleanup_related_content!)
+
+      expect(MlSummaryComment.count).to be 1
+      expect(RelatedContent.from_machine_learning).to be_empty
+      expect(Tag.count).to be 1
+      expect(MlTag.count).to be 1
+      expect(Tagging.count).to be 1
+      expect(MlTagging.count).to be 1
+    end
+  end
+
+  describe "#cleanup_summary_comments!" do
+    it "deletes summary comments machine learning generated data" do
+      create :ml_summary_comment, commentable: create(:proposal)
+      create :related_content, :from_machine_learning
+      tag = create(:tag)
+      MlTag.create!(tag: tag)
+      MlTagging.create!(tagging: create(:tagging, tag: tag))
+
+      expect(MlSummaryComment.count).to be 1
+      expect(RelatedContent.from_machine_learning.count).to be 2
+      expect(Tag.count).to be 1
+      expect(MlTag.count).to be 1
+      expect(Tagging.count).to be 1
+      expect(MlTagging.count).to be 1
+
+      machine_learning = MachineLearning.new(job)
+      machine_learning.send(:cleanup_summary_comments!)
+
+      expect(MlSummaryComment.all).to be_empty
+      expect(RelatedContent.from_machine_learning.count).to be 2
+      expect(Tag.count).to be 1
+      expect(MlTag.count).to be 1
+      expect(Tagging.count).to be 1
+      expect(MlTagging.count).to be 1
     end
   end
 

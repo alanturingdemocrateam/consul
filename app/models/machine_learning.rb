@@ -1,32 +1,41 @@
 class MachineLearning
-  attr_reader :user, :script
+  attr_reader :user, :script, :kind
   attr_accessor :job
 
-  SCRIPTS_FOLDER = Rails.root.join("lib", "machine_learning", "scripts").freeze
+  SCRIPTS_FOLDER = Rails.root.join("public", "machine_learning", "scripts").freeze
+  DATA_FOLDER = Rails.root.join("public", "machine_learning", "data").freeze
 
   def initialize(job)
     @job = job
     @user = job.user
-    @script = full_path_for(job.script)
+    @script = SCRIPTS_FOLDER.join(job.script)
+    @kind = kind_for(job.script)
   end
 
   def run
     begin
-      MachineLearning.cleanup!
-
       export_proposals_to_json
       export_budget_investments_to_json
       export_comments_to_json
 
       return unless run_machine_learning_scripts
 
-      import_ml_summary_comments
-      import_proposals_related_content
-      import_budget_investments_related_content
-      import_ml_tags
-      import_ml_taggins
+      case kind
+      when "tags"
+        cleanup_tags!
+        import_ml_tags
+        import_ml_taggins
+      when "related_content"
+        cleanup_related_content!
+        import_proposals_related_content
+        import_budget_investments_related_content
+      when "comments_summary"
+        cleanup_summary_comments!
+        import_ml_summary_comments
+      end
 
       job.update!(finished_at: Time.current)
+      MachineLearningInfo.find_or_create_by!(kind: kind).update!(generated_at: Time.current)
       Mailer.machine_learning_success(user).deliver_later
     rescue Exception => error
       handle_error(error)
@@ -35,25 +44,18 @@ class MachineLearning
   end
   handle_asynchronously :run, queue: "machine_learning"
 
-  def self.cleanup!
-    MlSummaryComment.destroy_all
-    RelatedContent.with_hidden.from_machine_learning.each(&:really_destroy!)
-    MlTagging.destroy_all
-    MlTag.destroy_all
-  end
-
   private
 
     def export_proposals_to_json
-      Proposal::Exporter.new.to_json_file full_path_for("proposals.json")
+      Proposal::Exporter.new.to_json_file DATA_FOLDER.join("proposals.json")
     end
 
     def export_budget_investments_to_json
-      Budget::Investment::Exporter.new(Array.new).to_json_file full_path_for("budget_investments.json")
+      Budget::Investment::Exporter.new(Array.new).to_json_file DATA_FOLDER.join("budget_investments.json")
     end
 
     def export_comments_to_json
-      Comment::Exporter.new.to_json_file full_path_for("comments.json")
+      Comment::Exporter.new.to_json_file DATA_FOLDER.join("comments.json")
     end
 
     def run_machine_learning_scripts
@@ -66,8 +68,21 @@ class MachineLearning
       result
     end
 
+    def cleanup_tags!
+      MlTagging.destroy_all
+      MlTag.destroy_all
+    end
+
+    def cleanup_related_content!
+      RelatedContent.with_hidden.from_machine_learning.each(&:really_destroy!)
+    end
+
+    def cleanup_summary_comments!
+      MlSummaryComment.destroy_all
+    end
+
     def import_ml_summary_comments
-      json_file = full_path_for("machine_learning_comments_textrank.json")
+      json_file = DATA_FOLDER.join("machine_learning_comments_textrank.json")
       json_data = JSON.parse(File.read(json_file)).each(&:deep_symbolize_keys!)
       json_data.each do |attributes|
         unless MlSummaryComment.find_by(commentable_id: attributes[:commentable_id],
@@ -78,7 +93,7 @@ class MachineLearning
     end
 
     def import_proposals_related_content
-      json_file = full_path_for("machine_learning_proposals_related_nmf.json")
+      json_file = DATA_FOLDER.join("machine_learning_proposals_related_nmf.json")
       json_data = JSON.parse(File.read(json_file))
       json_data.each do |list|
         proposal_id = list.shift
@@ -98,7 +113,7 @@ class MachineLearning
     end
 
     def import_budget_investments_related_content
-      json_file = full_path_for("machine_learning_budget_investments_related_nmf.json")
+      json_file = DATA_FOLDER.join("machine_learning_budget_investments_related_nmf.json")
       json_data = JSON.parse(File.read(json_file))
       json_data.each do |list|
         proposal_id = list.shift
@@ -118,7 +133,7 @@ class MachineLearning
     end
 
     def import_ml_tags
-      json_file = full_path_for("machine_learning_tags_nmf.json")
+      json_file = DATA_FOLDER.join("machine_learning_tags_nmf.json")
       json_data = JSON.parse(File.read(json_file)).each(&:deep_symbolize_keys!)
       json_data.each do |attributes|
         ml_tag_id = attributes.delete(:id)
@@ -135,7 +150,7 @@ class MachineLearning
     end
 
     def import_ml_taggins
-      json_file = full_path_for("machine_learning_taggings_nmf.json")
+      json_file = DATA_FOLDER.join("machine_learning_taggings_nmf.json")
       json_data = JSON.parse(File.read(json_file)).each(&:deep_symbolize_keys!)
       json_data.each do |attributes|
         ml_tag_id = attributes[:tag_id]
@@ -162,7 +177,9 @@ class MachineLearning
       Mailer.machine_learning_error(user).deliver_later
     end
 
-    def full_path_for(filename)
-      SCRIPTS_FOLDER.join(filename)
+    def kind_for(filename)
+      return "tags" if filename.start_with? "tags"
+      return "related_content" if filename.start_with? "related_content"
+      return "comments_summary" if filename.start_with? "comments"
     end
 end

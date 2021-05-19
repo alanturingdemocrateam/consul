@@ -261,7 +261,7 @@ namespace :admin do
 
   resource :machine_learning, controller: :machine_learning, only: [:show] do
     post :execute, on: :collection
-    post :delete, on: :collection
+    post :cancel, on: :collection
   end
 end
 

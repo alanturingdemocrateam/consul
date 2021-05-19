@@ -1,8 +1,9 @@
 class Admin::MachineLearningController < Admin::BaseController
+  before_action :load_machine_learning_settings, only: :show
   before_action :load_machine_learning_job, only: :show
+  before_action :reset_machine_learning_settings, only: :delete
 
   def show
-    @machine_learning_settings = machine_learning_settings
   end
 
   def execute
@@ -18,10 +19,8 @@ class Admin::MachineLearningController < Admin::BaseController
     redirect_to admin_machine_learning_path
   end
 
-  def delete
+  def cancel
     Delayed::Job.where(queue: "machine_learning").destroy_all
-    reset_machine_learning_settings
-    MachineLearning.cleanup!
     MachineLearningJob.destroy_all
 
     redirect_to admin_machine_learning_path,
@@ -40,7 +39,7 @@ class Admin::MachineLearningController < Admin::BaseController
       Setting["machine_learning.tags"] = false
     end
 
-    def machine_learning_settings
-      Setting.select { |setting| setting.key.start_with?("machine_learning.") }
+    def load_machine_learning_settings
+      @machine_learning_settings = Setting.select { |setting| setting.key.start_with?("machine_learning.") }
     end
 end
