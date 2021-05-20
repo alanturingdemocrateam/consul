@@ -14,7 +14,7 @@ describe "Machine learning" do
     visit admin_root_path
 
     within "#admin_menu" do
-      expect(page).not_to have_link "Machine learning"
+      expect(page).not_to have_link "AI / Machine learning"
     end
 
     Setting["feature.machine_learning"] = true
@@ -22,15 +22,16 @@ describe "Machine learning" do
     visit admin_root_path
 
     within "#admin_menu" do
-      expect(page).to have_link "Machine learning"
+      expect(page).to have_link "AI / Machine learning"
     end
 
-    click_link "Machine learning"
+    click_link "AI / Machine learning"
 
-    expect(page).to have_content "Machine learning"
+    expect(page).to have_content "AI / Machine learning"
     expect(page).to have_content "This functionality is experimental"
-    expect(page).to have_link "Machine learning scripts"
-    expect(page).to have_link "Help about machine learning"
+    expect(page).to have_link "Execute script"
+    expect(page).to have_link "Settings"
+    expect(page).to have_link "Help"
     expect(page).to have_current_path(admin_machine_learning_path)
   end
 
@@ -55,10 +56,21 @@ describe "Machine learning" do
       MachineLearningJob.first.update! finished_at: Time.current
     end
 
-    select "script.py", from: :script
+    select "tags_machine_learning.py", from: :script
     click_button "Execute script"
 
     expect(page).to have_content "Machine learning content has been generated successfully"
+
+    expect(page).to have_content "Select pyhton script to execute"
+    expect(page).to have_button "Execute script"
+  end
+
+  scenario "Settings" do
+    visit admin_machine_learning_path
+
+    within "#machine_learning_tabs" do
+      click_link "Settings"
+    end
 
     expect(page).to have_content "Related content"
     expect(page).to have_content "Adds automatically generated related content to proposals and "\
@@ -69,12 +81,9 @@ describe "Machine learning" do
                                  "can be commented on."
 
     expect(page).to have_content "Tags"
-    expect(page).to have_content "Generates automatic tags for proposals replacing those added by users."
+    expect(page).to have_content "Generates automatic tags on all items that can be tagged on."
 
     expect(page).to have_button("No", count: 3)
-
-    expect(page).not_to have_content "Select pyhton script to execute"
-    expect(page).not_to have_button "Execute script"
   end
 
   scenario "Script started but not finished yet" do
@@ -82,7 +91,7 @@ describe "Machine learning" do
 
     allow_any_instance_of(MachineLearning).to receive(:run)
 
-    select "script.py", from: :script
+    select "comments_machine_learning.py", from: :script
     click_button "Execute script"
 
     expect(page).to have_content "The script is running. The administrator who executed it will receive "\
@@ -104,7 +113,7 @@ describe "Machine learning" do
       MachineLearningJob.first.update! started_at: 25.hours.ago
     end
 
-    select "script.py", from: :script
+    select "related_content_machine_learning.py", from: :script
     click_button "Execute script"
 
     accept_confirm { click_link "Cancel operation" }
@@ -128,7 +137,7 @@ describe "Machine learning" do
       MachineLearningJob.first.update! finished_at: Time.current, error: "Error description"
     end
 
-    select "script.py", from: :script
+    select "tags_machine_learning.py", from: :script
     click_button "Execute script"
 
     expect(page).to have_content "An error has occurred. You can see the details below."
@@ -174,10 +183,14 @@ describe "Machine learning" do
       MachineLearningJob.first.update! finished_at: Time.current
     end
 
-    select "script.py", from: :script
+    select "comments_machine_learning.py", from: :script
     click_button "Execute script"
 
     expect(page).to have_content "Machine learning content has been generated successfully"
+
+    within "#machine_learning_tabs" do
+      click_link "Settings"
+    end
 
     expect(page).to have_button("No", count: 3)
 
