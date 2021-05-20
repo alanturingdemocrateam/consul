@@ -13,6 +13,11 @@
       </a>
     </li>
     <li class="tabs-title">
+      <a data-tabs-target="panel_settings" href="#panel_settings">
+        <%= t("admin.machine_learning.tab_settings") %>
+      </a>
+    </li>
+    <li class="tabs-title">
       <a data-tabs-target="panel_help" href="#panel_help">
         <%= t("admin.machine_learning.tab_help") %>
       </a>
@@ -54,6 +59,8 @@
 
   <div class="tabs-content" data-tabs-content="machine_learning_tabs">
     <%= render "scripts_tab", machine_learning_job: @machine_learning_job %>
+
+    <%= render "settings_tab" %>
 
     <%= render "help_tab" %>
   </div>

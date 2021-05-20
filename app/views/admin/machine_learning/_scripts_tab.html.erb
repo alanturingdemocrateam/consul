@@ -1,12 +1,10 @@
 <div class="tabs-panel is-active" id="panel_scripts">
-  <% if machine_learning_job.finished? && !machine_learning_job.errored? %>
-    <%= render "settings" %>
-  <% elsif machine_learning_job.running_for_too_long? %>
+  <% if machine_learning_job.running_for_too_long? %>
     <%= link_to t("admin.machine_learning.cancel"),
                 cancel_admin_machine_learning_path,
                 method: :post, class: "button hollow alert",
                 data: { confirm: t("admin.machine_learning.cancel_alert") } %>
-  <% elsif machine_learning_job.errored? || !machine_learning_job.started? %>
+  <% elsif machine_learning_job.errored? || !machine_learning_job.started? || machine_learning_job.finished? %>
     <div class="callout secondary">
       <%= t("admin.machine_learning.script_info", email: current_user.email) %>
     </div>
