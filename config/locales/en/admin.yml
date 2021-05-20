@@ -705,6 +705,7 @@ en:
           mailers: "Emails"
           management: "Management"
           welcome: "Welcome"
+          machine_learning: "AI / Machine Learning"
         buttons:
           save: "Save"
           content_block:
@@ -722,7 +723,7 @@ en:
       debates: "Debates"
       comments: "Comments"
       local_census_records: Manage local census
-      machine_learning: "Machine learning"
+      machine_learning: "AI / Machine learning"
     administrators:
       index:
         title: Administrators
@@ -1636,16 +1637,17 @@ en:
         local_census_records:
           no_records_found: No records found.
     machine_learning:
-      title: "Machine learning"
+      title: "AI / Machine learning"
       help_text: "This functionality is experimental."
-      tab_help: "Help about machine learning"
-      tab_scripts: "Machine learning scripts"
+      tab_help: "Help"
+      tab_settings: "Settings"
+      tab_scripts: "Execute script"
       summary_comments: "Comments summary"
       summary_comments_description: "Displays an automatically generated comment summary on all items that can be commented on."
       related_content: "Related content"
       related_content_description: "Adds automatically generated related content to proposals and participatory budget projects."
       tags: "Tags"
-      tags_description: "Generates automatic tags for proposals replacing those added by users."
+      tags_description: "Generates automatic tags on all items that can be tagged on."
       cancel: "Cancel operation"
       cancel_alert: "This action will cancel the current script and it will be necessary to run the script again."
       script_info: "You will receive an email in %{email} when the script finishes running. You can then select which generated content you want to display."

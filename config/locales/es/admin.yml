@@ -704,6 +704,7 @@ es:
           mailers: "Correos"
           management: "Gestión"
           welcome: "Bienvenido/a"
+          machine_learning: "IA / Machine Learning"
         buttons:
           save: "Guardar cambios"
           content_block:
@@ -721,7 +722,7 @@ es:
       debates: "Debates"
       comments: "Comentarios"
       local_census_records: Gestionar censo local
-      machine_learning: "Machine learning"
+      machine_learning: "IA / Machine learning"
     administrators:
       index:
         title: Administradores
@@ -1635,16 +1636,17 @@ es:
         local_census_records:
           no_records_found: No se han encontrado registros.
     machine_learning:
-      title: "Machine learning"
+      title: "IA / Machine learning"
       help_text: "Esta Funcionalidad es experimental."
-      tab_help: "Ayuda sobre machine learning"
-      tab_scripts: "Machine learning scripts"
+      tab_help: "Ayuda"
+      tab_settings: "Configuración"
+      tab_scripts: "Ejecutar script"
       summary_comments: "Resumen de comentarios"
       summary_comments_description: "Muestra un resumen de comentarios generado automáticamente en todos los elementos que pueden ser comentados."
       related_content: "Contenido relacionado"
       related_content_description: "Añade contenido relacionado generado automáticamente a las propuestas y proyectos de presupuestos participativos."
       tags: "Etiquetas"
-      tags_description: "Genera etiquetas automáticas para las propuestas que sustituyen a las añadidas por los usuarios."
+      tags_description: "Genera etiquetas automáticas para todos los elementos que pueden ser etiquetados."
       delete_generated_content: "Borrar contenido generado"
       delete_generated_content_alert: "Esta acción borrará todo el contenido generado por Machine Learning y será necesario ejecutar el script de nuevo."
       cancel: "Cancelar operación"
