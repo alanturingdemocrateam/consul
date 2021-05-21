@@ -7,6 +7,23 @@ describe MachineLearning do
 
   let(:job) { create :machine_learning_job }
 
+  describe "#kind" do
+    it "returns the kind depending on the script name" do
+      tags_job = create :machine_learning_job, script: "tags_script.py"
+      related_content_job = create :machine_learning_job, script: "related_content_script.py"
+      comments_summary_job = create :machine_learning_job, script: "comments_summary_script.py"
+
+      machine_learning = MachineLearning.new(tags_job)
+      expect(machine_learning.kind).to eq "tags"
+
+      machine_learning = MachineLearning.new(related_content_job)
+      expect(machine_learning.kind).to eq "related_content"
+
+      machine_learning = MachineLearning.new(comments_summary_job)
+      expect(machine_learning.kind).to eq "comments_summary"
+    end
+  end
+
   describe "#cleanup_tags!" do
     it "deletes tags machine learning generated data" do
       create :ml_summary_comment, commentable: create(:proposal)

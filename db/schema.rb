@@ -872,7 +872,7 @@ ActiveRecord::Schema.define(version: 2021_05_19_115700) do
   end
 
   create_table "machine_learning_infos", force: :cascade do |t|
-    t.datetime "kind"
+    t.string "kind"
     t.datetime "generated_at"
     t.string "script"
     t.datetime "created_at", null: false

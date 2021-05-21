@@ -35,7 +35,9 @@ class MachineLearning
       end
 
       job.update!(finished_at: Time.current)
-      MachineLearningInfo.find_or_create_by!(kind: kind).update!(generated_at: Time.current, script: script)
+      MachineLearningInfo.find_or_create_by!(kind: kind).update!(
+        generated_at: Time.current,
+        script: job.script)
       Mailer.machine_learning_success(user).deliver_later
     rescue Exception => error
       handle_error(error)
