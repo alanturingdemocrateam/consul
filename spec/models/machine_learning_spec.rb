@@ -113,7 +113,7 @@ describe MachineLearning do
       machine_learning = MachineLearning.new(job)
       machine_learning.send(:export_proposals_to_json)
 
-      json_file = machine_learning.send(:full_path_for, "proposals.json")
+      json_file = MachineLearning::DATA_FOLDER.join("proposals.json")
       json = JSON.parse(File.read(json_file))
 
       expect(json).to be_an Array
@@ -139,7 +139,7 @@ describe MachineLearning do
       machine_learning = MachineLearning.new(job)
       machine_learning.send(:export_budget_investments_to_json)
 
-      json_file = machine_learning.send(:full_path_for, "budget_investments.json")
+      json_file = MachineLearning::DATA_FOLDER.join("budget_investments.json")
       json = JSON.parse(File.read(json_file))
 
       expect(json).to be_an Array
@@ -163,7 +163,7 @@ describe MachineLearning do
       machine_learning = MachineLearning.new(job)
       machine_learning.send(:export_comments_to_json)
 
-      json_file = machine_learning.send(:full_path_for, "comments.json")
+      json_file = MachineLearning::DATA_FOLDER.join("comments.json")
       json = JSON.parse(File.read(json_file))
 
       expect(json).to be_an Array
@@ -185,7 +185,7 @@ describe MachineLearning do
     it "returns true if python script executed correctly" do
       machine_learning = MachineLearning.new(job)
 
-      python_script = machine_learning.send(:full_path_for, "script.py")
+      python_script = MachineLearning::SCRIPTS_FOLDER.join("script.py")
       expect(machine_learning).to receive(:`).with("python #{python_script} 2>&1") do
         Process.waitpid Process.fork { exit 0 }
       end
@@ -202,7 +202,7 @@ describe MachineLearning do
     it "returns false if python script errored" do
       machine_learning = MachineLearning.new(job)
 
-      python_script = machine_learning.send(:full_path_for, "script.py")
+      python_script = MachineLearning::SCRIPTS_FOLDER.join("script.py")
       expect(machine_learning).to receive(:`).with("python #{python_script} 2>&1") do
         Process.waitpid Process.fork { abort "error message" }
       end
@@ -240,7 +240,7 @@ describe MachineLearning do
       ]
 
       filename = "machine_learning_comments_textrank.json"
-      json_file = machine_learning.send(:full_path_for, filename)
+      json_file = MachineLearning::DATA_FOLDER.join(filename)
       expect(File).to receive(:read).with(json_file).and_return data.to_json
 
       machine_learning.send(:import_ml_summary_comments)
@@ -264,7 +264,7 @@ describe MachineLearning do
       ]
 
       filename = "machine_learning_proposals_related_nmf.json"
-      json_file = machine_learning.send(:full_path_for, filename)
+      json_file = MachineLearning::DATA_FOLDER.join(filename)
       expect(File).to receive(:read).with(json_file).and_return data.to_json
 
       machine_learning.send(:import_proposals_related_content)
@@ -288,7 +288,7 @@ describe MachineLearning do
       ]
 
       filename = "machine_learning_budget_investments_related_nmf.json"
-      json_file = machine_learning.send(:full_path_for, filename)
+      json_file = MachineLearning::DATA_FOLDER.join(filename)
       expect(File).to receive(:read).with(json_file).and_return data.to_json
 
       machine_learning.send(:import_budget_investments_related_content)
@@ -311,7 +311,7 @@ describe MachineLearning do
       ]
 
       filename = "machine_learning_tags_nmf.json"
-      json_file = machine_learning.send(:full_path_for, filename)
+      json_file = MachineLearning::DATA_FOLDER.join(filename)
       expect(File).to receive(:read).with(json_file).and_return data.to_json
 
       machine_learning.send(:import_ml_tags)
@@ -351,7 +351,7 @@ describe MachineLearning do
       ]
 
       filename = "machine_learning_taggings_nmf.json"
-      json_file = machine_learning.send(:full_path_for, filename)
+      json_file = MachineLearning::DATA_FOLDER.join(filename)
       expect(File).to receive(:read).with(json_file).and_return data.to_json
 
       machine_learning.send(:import_ml_taggins)
