@@ -4,6 +4,7 @@ class Admin::MachineLearningController < Admin::BaseController
   before_action :reset_machine_learning_settings, only: :delete
 
   def show
+    @machine_learning_info = MachineLearningInfo.all
   end
 
   def execute

@@ -8,10 +8,58 @@
         <div class="card-section">
           <p><%= t("admin.#{setting.key}_description") %></p>
 
-          <%= form_for(setting, url: admin_setting_path(setting), method: :put) do |f| %>
-            <%= f.hidden_field :value, value: (setting.enabled? ? "" : "active") %>
-            <%= f.button(t("shared.#{setting.enabled? ? "yes" : "no"}"),
-                         class: "button button-switch #{setting.enabled? ? "switch-on" : "switch-off"}") %>
+          <% @machine_learning_info.each do |ml_info| %>
+            <% if setting.key == "machine_learning.#{ml_info.kind}" %>
+              <%= form_for(setting, url: admin_setting_path(setting), method: :put) do |f| %>
+                <%= f.hidden_field :value, value: (setting.enabled? ? "" : "active") %>
+                <%= f.button(t("shared.#{setting.enabled? ? "yes" : "no"}"),
+                             class: "button
+                                     button-switch #{setting.enabled? ? "switch-on" : "switch-off"}") %>
+              <% end %>
+
+              <div class="callout success small">
+                <strong>
+                  <%= t("admin.machine_learning.last_execution") %>
+                  <%= ml_info.generated_at.strftime("%Y/%m/%d - %H:%M") %>
+                </strong>
+                <br>
+                <%= t("admin.machine_learning.excuted_script") %>
+                <br>
+                <a href="<%= root_url + "machine_learning/scripts/#{ml_info.script}" %>" target="_blank">
+                  <%= ml_info.script %>
+                </a>
+                <br>
+                <%= t("admin.machine_learning.output_files_generated") %>
+                <br>
+
+                <% data_folder = root_url + "/machine_learning/data/" %>
+                <% if ml_info.kind == "related_content" %>
+                  <a href="<%= data_folder + "machine_learning_proposals_related_nmf.json" %>"
+                     target="_blank">
+                     machine_learning_proposals_related_nmf.json
+                  </a>
+                  <a href="<%= data_folder + "machine_learning_budget_investments_related_nmf.json" %>"
+                     target="_blank">
+                     machine_learning_budget_investments_related_nmf.json
+                  </a>
+                <% elsif ml_info.kind == "comments_summary" %>
+                  <a href="<%= data_folder + "machine_learning_comments_textrank.json" %>" target="_blank">
+                     machine_learning_comments_textrank.json
+                  </a>
+                <% elsif ml_info.kind == "tags" %>
+                  <a href="<%= data_folder + "machine_learning_tags_nmf.json" %>" target="_blank">
+                    machine_learning_tags_nmf.json
+                  </a>
+                  <a href="<%= data_folder + "machine_learning_taggings_nmf.json" %>" target="_blank">
+                    machine_learning_taggings_nmf.json
+                  </a>
+                <% end %>
+              </div>
+            <% else %>
+              <div class="callout secondary">
+                <%= t("admin.machine_learning.no_content") %>
+              </div>
+            <% end %>
           <% end %>
         </div>
       </div>

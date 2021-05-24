@@ -83,7 +83,7 @@ describe "Machine learning" do
     expect(page).to have_content "Tags"
     expect(page).to have_content "Generates automatic tags on all items that can be tagged on."
 
-    expect(page).to have_button("No", count: 3)
+    expect(page).not_to have_button("No")
   end
 
   scenario "Script started but not finished yet" do
@@ -192,7 +192,7 @@ describe "Machine learning" do
       click_link "Settings"
     end
 
-    expect(page).to have_button("No", count: 3)
+    expect(page).not_to have_button("No")
 
     expect(Setting["machine_learning.related_content"]).to eq nil
     expect(Setting["machine_learning.comments_summary"]).to eq nil
