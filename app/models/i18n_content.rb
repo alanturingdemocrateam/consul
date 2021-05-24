@@ -100,10 +100,10 @@ class I18nContent < ApplicationRecord
   def self.machine_learning_translations
     %w[
       admin.machine_learning.title
-      machine_learning.summary_comments
+      machine_learning.comments_summary
       machine_learning.info_text
-      admin.machine_learning.summary_comments
-      admin.machine_learning.summary_comments_description
+      admin.machine_learning.comments_summary
+      admin.machine_learning.comments_summary_description
       admin.machine_learning.related_content
       admin.machine_learning.related_content_description
       admin.machine_learning.tags

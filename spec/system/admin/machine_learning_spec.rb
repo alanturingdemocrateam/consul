@@ -126,7 +126,7 @@ describe "Machine learning" do
     expect(Delayed::Job.where(queue: "machine_learning")).to be_empty
 
     expect(Setting["machine_learning.related_content"]).to be nil
-    expect(Setting["machine_learning.summary_comments"]).to be nil
+    expect(Setting["machine_learning.comments_summary"]).to be nil
     expect(Setting["machine_learning.tags"]).to be nil
   end
 
@@ -195,7 +195,7 @@ describe "Machine learning" do
     expect(page).to have_button("No", count: 3)
 
     expect(Setting["machine_learning.related_content"]).to eq nil
-    expect(Setting["machine_learning.summary_comments"]).to eq nil
+    expect(Setting["machine_learning.comments_summary"]).to eq nil
     expect(Setting["machine_learning.tags"]).to eq nil
   end
 end

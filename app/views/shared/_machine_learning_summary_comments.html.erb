@@ -1,8 +1,8 @@
-<% if feature?(:machine_learning) && Setting["machine_learning.summary_comments"] %>
+<% if feature?(:machine_learning) && Setting["machine_learning.comments_summary"] %>
   <% if commentable.summary_comment&.body.present? %>
     <div class="row column margin-bottom">
       <p>
-        <strong><%= t("machine_learning.summary_comments") %></strong>
+        <strong><%= t("machine_learning.comments_summary") %></strong>
         <br>
         <span class="help-text"><%= t("machine_learning.info_text") %></span>
       </p>

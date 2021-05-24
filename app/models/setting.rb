@@ -193,7 +193,7 @@ class Setting < ApplicationRecord
         "sdg.process.budgets": true,
         "sdg.process.legislation": true,
         "machine_learning.related_content": false,
-        "machine_learning.summary_comments": false,
+        "machine_learning.comments_summary": false,
         "machine_learning.tags": false
       }
     end
