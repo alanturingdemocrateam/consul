@@ -83,7 +83,7 @@ describe "Machine learning" do
     expect(page).to have_content "Tags"
     expect(page).to have_content "Generates automatic tags on all items that can be tagged on."
 
-    expect(page).not_to have_button("No")
+    expect(page).to have_button("No", count: 3)
   end
 
   scenario "Script started but not finished yet" do
@@ -91,7 +91,7 @@ describe "Machine learning" do
 
     allow_any_instance_of(MachineLearning).to receive(:run)
 
-    select "comments_machine_learning.py", from: :script
+    select "comments_summary_machine_learning.py", from: :script
     click_button "Execute script"
 
     expect(page).to have_content "The script is running. The administrator who executed it will receive "\
@@ -183,7 +183,7 @@ describe "Machine learning" do
       MachineLearningJob.first.update! finished_at: Time.current
     end
 
-    select "comments_machine_learning.py", from: :script
+    select "comments_summary_machine_learning.py", from: :script
     click_button "Execute script"
 
     expect(page).to have_content "Machine learning content has been generated successfully"
@@ -192,7 +192,7 @@ describe "Machine learning" do
       click_link "Settings"
     end
 
-    expect(page).not_to have_button("No")
+    expect(page).to have_button("No", count: 3)
 
     expect(Setting["machine_learning.related_content"]).to eq nil
     expect(Setting["machine_learning.comments_summary"]).to eq nil

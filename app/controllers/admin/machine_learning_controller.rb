@@ -1,10 +1,9 @@
 class Admin::MachineLearningController < Admin::BaseController
-  before_action :load_machine_learning_settings, only: :show
   before_action :load_machine_learning_job, only: :show
   before_action :reset_machine_learning_settings, only: :delete
 
   def show
-    @machine_learning_info = MachineLearningInfo.all
+    @script_kinds = MachineLearning::SCRIPT_KINDS
   end
 
   def execute
@@ -38,9 +37,5 @@ class Admin::MachineLearningController < Admin::BaseController
       Setting["machine_learning.related_content"] = false
       Setting["machine_learning.comments_summary"] = false
       Setting["machine_learning.tags"] = false
-    end
-
-    def load_machine_learning_settings
-      @machine_learning_settings = Setting.select { |setting| setting.key.start_with?("machine_learning.") }
     end
 end

@@ -2,8 +2,24 @@ class MachineLearning
   attr_reader :user, :script, :kind
   attr_accessor :job
 
+  SCRIPT_KINDS = %w[tags related_content comments_summary].freeze
   SCRIPTS_FOLDER = Rails.root.join("public", "machine_learning", "scripts").freeze
+  SCRIPTS_URL = "/machine_learning/scripts/".freeze
   DATA_FOLDER = Rails.root.join("public", "machine_learning", "data").freeze
+  DATA_URL = "/machine_learning/data/".freeze
+  DATA_FILES = {
+    tags: [
+      "machine_learning_tags_nmf.json",
+      "machine_learning_taggings_nmf.json"
+    ],
+    related_content: [
+      "machine_learning_proposals_related_nmf.json",
+      "machine_learning_budget_investments_related_nmf.json"
+    ],
+    comments_summary: [
+      "machine_learning_comments_textrank.json"
+    ]
+  }.freeze
 
   def initialize(job)
     @job = job
@@ -30,8 +46,8 @@ class MachineLearning
         import_proposals_related_content
         import_budget_investments_related_content
       when "comments_summary"
-        cleanup_summary_comments!
-        import_ml_summary_comments
+        cleanup_comments_summary!
+        import_ml_comments_summary
       end
 
       job.update!(finished_at: Time.current)
@@ -73,18 +89,21 @@ class MachineLearning
     def cleanup_tags!
       MlTagging.destroy_all
       MlTag.destroy_all
+      MachineLearningInfo.reset("tags")
     end
 
     def cleanup_related_content!
       RelatedContent.with_hidden.from_machine_learning.each(&:really_destroy!)
+      MachineLearningInfo.reset("related_content")
     end
 
-    def cleanup_summary_comments!
+    def cleanup_comments_summary!
       MlSummaryComment.destroy_all
+      MachineLearningInfo.reset("comments_summary")
     end
 
-    def import_ml_summary_comments
-      json_file = DATA_FOLDER.join("machine_learning_comments_textrank.json")
+    def import_ml_comments_summary
+      json_file = DATA_FOLDER.join DATA_FILES[:comments_summary].first
       json_data = JSON.parse(File.read(json_file)).each(&:deep_symbolize_keys!)
       json_data.each do |attributes|
         unless MlSummaryComment.find_by(commentable_id: attributes[:commentable_id],
@@ -95,8 +114,8 @@ class MachineLearning
     end
 
     def import_proposals_related_content
-      json_file = DATA_FOLDER.join("machine_learning_proposals_related_nmf.json")
-      json_data = JSON.parse(File.read(json_file))
+      json_file = DATA_FOLDER.join DATA_FILES[:related_content].first
+      json_data = JSON.parse File.read(json_file)
       json_data.each do |list|
         proposal_id = list.shift
         list.reject! { |value| value.to_s.empty? }
@@ -115,8 +134,8 @@ class MachineLearning
     end
 
     def import_budget_investments_related_content
-      json_file = DATA_FOLDER.join("machine_learning_budget_investments_related_nmf.json")
-      json_data = JSON.parse(File.read(json_file))
+      json_file = DATA_FOLDER.join DATA_FILES[:related_content].last
+      json_data = JSON.parse File.read(json_file)
       json_data.each do |list|
         proposal_id = list.shift
         list.reject! { |value| value.to_s.empty? }
@@ -135,7 +154,7 @@ class MachineLearning
     end
 
     def import_ml_tags
-      json_file = DATA_FOLDER.join("machine_learning_tags_nmf.json")
+      json_file = DATA_FOLDER.join DATA_FILES[:tags].first
       json_data = JSON.parse(File.read(json_file)).each(&:deep_symbolize_keys!)
       json_data.each do |attributes|
         ml_tag_id = attributes.delete(:id)
@@ -152,7 +171,7 @@ class MachineLearning
     end
 
     def import_ml_taggins
-      json_file = DATA_FOLDER.join("machine_learning_taggings_nmf.json")
+      json_file = DATA_FOLDER.join DATA_FILES[:tags].last
       json_data = JSON.parse(File.read(json_file)).each(&:deep_symbolize_keys!)
       json_data.each do |attributes|
         ml_tag_id = attributes[:tag_id]
@@ -180,8 +199,10 @@ class MachineLearning
     end
 
     def kind_for(filename)
-      return "tags" if filename.start_with? "tags"
-      return "related_content" if filename.start_with? "related_content"
-      return "comments_summary" if filename.start_with? "comments"
+      script_kind = nil
+      SCRIPT_KINDS.each do |kind|
+        script_kind = kind if filename.start_with? kind
+      end
+      script_kind
     end
 end
