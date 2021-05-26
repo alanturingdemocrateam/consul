@@ -24,39 +24,6 @@
     </li>
   </ul>
 
-  <% if @machine_learning_job.errored? %>
-    <div class="callout alert">
-      <p>
-        <span class="fas fa-ban"></span>
-        <strong><%= t("admin.machine_learning.notice.error") %></strong>
-      </p>
-
-      <p>
-        <strong><%= t("admin.machine_learning.executed_by") %></strong> <%= @machine_learning_job.user.name %><br>
-        <strong><%= t("admin.machine_learning.script_name") %></strong> <%= @machine_learning_job.script %><br>
-        <strong><%= t("admin.machine_learning.error") %></strong> <%= sanitize(@machine_learning_job.error) %>
-      </p>
-    </div>
-  <% elsif @machine_learning_job.finished? %>
-    <div class="callout success">
-      <span class="fas fa-check-circle"></span>
-      <strong><%= t("admin.machine_learning.notice.success") %></strong>
-    </div>
-  <% elsif @machine_learning_job.started? %>
-    <div class="callout warning">
-      <p>
-        <span class="fas fa-hourglass-half"></span>
-        <strong><%= t("admin.machine_learning.notice.working") %></strong>
-      </p>
-
-      <p>
-        <strong><%= t("admin.machine_learning.executed_by") %></strong> <%= @machine_learning_job.user.name %><br>
-        <strong><%= t("admin.machine_learning.script_name") %></strong> <%= @machine_learning_job.script %><br>
-        <strong><%= t("admin.machine_learning.started_at") %></strong> <%= @machine_learning_job.started_at %>
-      </p>
-    </div>
-  <% end %>
-
   <div class="tabs-content" data-tabs-content="machine_learning_tabs">
     <%= render "scripts_tab", machine_learning_job: @machine_learning_job %>
 
