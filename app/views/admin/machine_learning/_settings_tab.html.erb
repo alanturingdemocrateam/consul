@@ -1,4 +1,4 @@
-<div class="tabs-panel" id="panel_settings">
+<div class="tabs-panel" id="settings">
   <% @script_kinds.each do |kind| %>
     <% setting = Setting.find_by(key: "machine_learning.#{kind}") %>
 
@@ -11,6 +11,7 @@
           <p><%= t("admin.machine_learning.#{kind}_description") %></p>
 
           <%= form_for(setting, url: admin_setting_path(setting), method: :put) do |f| %>
+            <%= f.hidden_field :tab, value: "#settings" %>
             <%= f.hidden_field :value, value: (setting.enabled? ? "" : "active") %>
             <%= f.button(t("shared.#{setting.enabled? ? "yes" : "no"}"),
                          class: "button button-switch #{setting.enabled? ? "switch-on" : "switch-off"}") %>
