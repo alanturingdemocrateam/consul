@@ -8,7 +8,10 @@
 
       <p>
         <strong><%= t("admin.machine_learning.executed_by") %></strong> <%= @machine_learning_job.user.name %><br>
-        <strong><%= t("admin.machine_learning.script_name") %></strong> <%= @machine_learning_job.script %><br>
+        <strong><%= t("admin.machine_learning.script_name") %></strong>
+        <a href="<%= MachineLearning::SCRIPTS_URL + @machine_learning_job.script %>" target="_blank">
+          <%= @machine_learning_job.script %>
+        </a><br>
         <strong><%= t("admin.machine_learning.error") %></strong> <%= sanitize(@machine_learning_job.error) %>
       </p>
     </div>
@@ -26,7 +29,10 @@
 
       <p>
         <strong><%= t("admin.machine_learning.executed_by") %></strong> <%= @machine_learning_job.user.name %><br>
-        <strong><%= t("admin.machine_learning.script_name") %></strong> <%= @machine_learning_job.script %><br>
+        <strong><%= t("admin.machine_learning.script_name") %></strong>
+        <a href="<%= MachineLearning::SCRIPTS_URL + @machine_learning_job.script %>" target="_blank">
+          <%= @machine_learning_job.script %>
+        </a><br>
         <strong><%= t("admin.machine_learning.started_at") %></strong> <%= @machine_learning_job.started_at %>
       </p>
     </div>
