@@ -1661,7 +1661,8 @@ en:
       feature_disabled_link: "settings page"
       last_execution: "Last execution"
       excuted_script: "Excuted script:"
-      output_files_generated: "Output files generated:"
+      input_files: "Input files:"
+      output_files: "Output files:"
       no_content: "No content generated yet."
       help:
         title: "How it works the machine learning"

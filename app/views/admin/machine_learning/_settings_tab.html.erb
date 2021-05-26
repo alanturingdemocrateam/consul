@@ -19,22 +19,36 @@
           <% ml_info = MachineLearningInfo.for(kind) %>
           <% if ml_info.present? %>
             <div class="callout success small">
-              <strong>
-                <%= t("admin.machine_learning.last_execution") %>
-                <%= ml_info.generated_at.strftime("%Y/%m/%d - %H:%M") %>
-              </strong>
-              <br>
-              <%= t("admin.machine_learning.excuted_script") %>
-              <br>
-              <a href="<%= MachineLearning::SCRIPTS_URL + ml_info.script %>" target="_blank">
-                <%= ml_info.script %>
-              </a>
-              <br>
-              <%= t("admin.machine_learning.output_files_generated") %>
-              <br>
-              <% MachineLearning::DATA_FILES[ml_info.kind.to_sym].each do |file| %>
-                <a href="<%= MachineLearning::DATA_URL + file %>" target="_blank"><%= file %></a>
-              <% end %>
+              <div class="margin-bottom">
+                <strong>
+                  <%= t("admin.machine_learning.last_execution") %>
+                  <%= ml_info.generated_at.strftime("%Y/%m/%d - %H:%M") %>
+                </strong>
+              </div>
+
+              <div class="margin-bottom">
+                <%= t("admin.machine_learning.excuted_script") %>
+                <br>
+                <a href="<%= MachineLearning::SCRIPTS_URL + ml_info.script %>" target="_blank">
+                  <%= ml_info.script %>
+                </a>
+              </div>
+
+              <div class="margin-bottom">
+                <%= t("admin.machine_learning.input_files") %>
+                <br>
+                <% MachineLearning::DATA_INPUT_FILES.each do |file| %>
+                  <a href="<%= MachineLearning::DATA_URL + file %>" target="_blank"><%= file %></a><br>
+                <% end %>
+              </div>
+
+              <div class="margin-bottom">
+                <%= t("admin.machine_learning.output_files") %>
+                <br>
+                <% MachineLearning::DATA_FILES[ml_info.kind.to_sym].each do |file| %>
+                  <a href="<%= MachineLearning::DATA_URL + file %>" target="_blank"><%= file %></a><br>
+                <% end %>
+              </div>
             </div>
           <% else %>
             <div class="callout secondary">

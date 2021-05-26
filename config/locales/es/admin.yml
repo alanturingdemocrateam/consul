@@ -1662,7 +1662,8 @@ es:
       feature_disabled_link: "página de configuración"
       last_execution: "Última ejecución"
       excuted_script: "Script ejecutado:"
-      output_files_generated: "Ficheros de salida generados:"
+      input_files: "Ficheros de entrada:"
+      output_files: "Ficheros de salida:"
       no_content: "Todavía no se ha generado contenido."
       help:
         title: "Cómo funciona el the machine learning"

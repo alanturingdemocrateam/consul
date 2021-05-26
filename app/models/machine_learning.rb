@@ -7,6 +7,7 @@ class MachineLearning
   SCRIPTS_URL = "/machine_learning/scripts/".freeze
   DATA_FOLDER = Rails.root.join("public", "machine_learning", "data").freeze
   DATA_URL = "/machine_learning/data/".freeze
+  DATA_INPUT_FILES = %w[budget_investments.json comments.json proposals.json].freeze
   DATA_FILES = {
     tags: [
       "machine_learning_tags_nmf.json",
