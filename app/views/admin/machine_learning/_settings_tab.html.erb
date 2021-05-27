@@ -1,5 +1,5 @@
 <div class="tabs-panel" id="settings">
-  <% @script_kinds.each do |kind| %>
+  <% script_kinds.each do |kind| %>
     <% setting = Setting.find_by(key: "machine_learning.#{kind}") %>
 
     <div class="small-12 medium-6 large-4 column end" id="<%= dom_id(setting) %>">

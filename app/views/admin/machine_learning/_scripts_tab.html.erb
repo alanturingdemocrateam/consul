@@ -1,5 +1,5 @@
 <div class="tabs-panel is-active" id="scripts">
-  <% if @machine_learning_job.errored? %>
+  <% if machine_learning_job.errored? %>
     <div class="callout alert">
       <p>
         <span class="fas fa-ban"></span>
@@ -7,20 +7,20 @@
       </p>
 
       <p>
-        <strong><%= t("admin.machine_learning.executed_by") %></strong> <%= @machine_learning_job.user.name %><br>
+        <strong><%= t("admin.machine_learning.executed_by") %></strong> <%= machine_learning_job.user.name %><br>
         <strong><%= t("admin.machine_learning.script_name") %></strong>
-        <a href="<%= MachineLearning::SCRIPTS_URL + @machine_learning_job.script %>" target="_blank">
-          <%= @machine_learning_job.script %>
+        <a href="<%= MachineLearning::SCRIPTS_URL + machine_learning_job.script %>" target="_blank">
+          <%= machine_learning_job.script %>
         </a><br>
-        <strong><%= t("admin.machine_learning.error") %></strong> <%= sanitize(@machine_learning_job.error) %>
+        <strong><%= t("admin.machine_learning.error") %></strong> <%= sanitize(machine_learning_job.error) %>
       </p>
     </div>
-  <% elsif @machine_learning_job.finished? %>
+  <% elsif machine_learning_job.finished? %>
     <div class="callout success">
       <span class="fas fa-check-circle"></span>
       <strong><%= t("admin.machine_learning.notice.success") %></strong>
     </div>
-  <% elsif @machine_learning_job.started? %>
+  <% elsif machine_learning_job.started? %>
     <div class="callout warning">
       <p>
         <span class="fas fa-hourglass-half"></span>
@@ -28,12 +28,12 @@
       </p>
 
       <p>
-        <strong><%= t("admin.machine_learning.executed_by") %></strong> <%= @machine_learning_job.user.name %><br>
+        <strong><%= t("admin.machine_learning.executed_by") %></strong> <%= machine_learning_job.user.name %><br>
         <strong><%= t("admin.machine_learning.script_name") %></strong>
-        <a href="<%= MachineLearning::SCRIPTS_URL + @machine_learning_job.script %>" target="_blank">
-          <%= @machine_learning_job.script %>
+        <a href="<%= MachineLearning::SCRIPTS_URL + machine_learning_job.script %>" target="_blank">
+          <%= machine_learning_job.script %>
         </a><br>
-        <strong><%= t("admin.machine_learning.started_at") %></strong> <%= @machine_learning_job.started_at %>
+        <strong><%= t("admin.machine_learning.started_at") %></strong> <%= machine_learning_job.started_at %>
       </p>
     </div>
   <% end %>
