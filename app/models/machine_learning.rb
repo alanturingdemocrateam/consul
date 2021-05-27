@@ -8,7 +8,7 @@ class MachineLearning
   DATA_FOLDER = Rails.root.join("public", "machine_learning", "data").freeze
   DATA_URL = "/machine_learning/data/".freeze
   DATA_INPUT_FILES = %w[budget_investments.json comments.json proposals.json].freeze
-  DATA_FILES = {
+  DATA_OUTPUT_FILES = {
     tags: [
       "machine_learning_tags_nmf.json",
       "machine_learning_taggings_nmf.json"
@@ -104,7 +104,7 @@ class MachineLearning
     end
 
     def import_ml_comments_summary
-      json_file = DATA_FOLDER.join DATA_FILES[:comments_summary].first
+      json_file = DATA_FOLDER.join DATA_OUTPUT_FILES[:comments_summary].first
       json_data = JSON.parse(File.read(json_file)).each(&:deep_symbolize_keys!)
       json_data.each do |attributes|
         unless MlSummaryComment.find_by(commentable_id: attributes[:commentable_id],
@@ -115,7 +115,7 @@ class MachineLearning
     end
 
     def import_proposals_related_content
-      json_file = DATA_FOLDER.join DATA_FILES[:related_content].first
+      json_file = DATA_FOLDER.join DATA_OUTPUT_FILES[:related_content].first
       json_data = JSON.parse File.read(json_file)
       json_data.each do |list|
         proposal_id = list.shift
@@ -135,7 +135,7 @@ class MachineLearning
     end
 
     def import_budget_investments_related_content
-      json_file = DATA_FOLDER.join DATA_FILES[:related_content].last
+      json_file = DATA_FOLDER.join DATA_OUTPUT_FILES[:related_content].last
       json_data = JSON.parse File.read(json_file)
       json_data.each do |list|
         proposal_id = list.shift
@@ -155,7 +155,7 @@ class MachineLearning
     end
 
     def import_ml_tags
-      json_file = DATA_FOLDER.join DATA_FILES[:tags].first
+      json_file = DATA_FOLDER.join DATA_OUTPUT_FILES[:tags].first
       json_data = JSON.parse(File.read(json_file)).each(&:deep_symbolize_keys!)
       json_data.each do |attributes|
         ml_tag_id = attributes.delete(:id)
@@ -172,7 +172,7 @@ class MachineLearning
     end
 
     def import_ml_taggins
-      json_file = DATA_FOLDER.join DATA_FILES[:tags].last
+      json_file = DATA_FOLDER.join DATA_OUTPUT_FILES[:tags].last
       json_data = JSON.parse(File.read(json_file)).each(&:deep_symbolize_keys!)
       json_data.each do |attributes|
         ml_tag_id = attributes[:tag_id]

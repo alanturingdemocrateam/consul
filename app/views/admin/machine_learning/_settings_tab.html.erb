@@ -46,7 +46,7 @@
               <div class="margin-bottom">
                 <%= t("admin.machine_learning.output_files") %>
                 <br>
-                <% MachineLearning::DATA_FILES[ml_info.kind.to_sym].each do |file| %>
+                <% MachineLearning::DATA_OUTPUT_FILES[ml_info.kind.to_sym].each do |file| %>
                   <a href="<%= MachineLearning::DATA_URL + file %>" target="_blank"><%= file %></a><br>
                 <% end %>
               </div>
