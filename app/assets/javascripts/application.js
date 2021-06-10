@@ -115,6 +115,7 @@
 //= require datepicker
 //= require_tree ./sdg
 //= require_tree ./sdg_management
+//= require machine_learning
 
 var initialize_modules = function() {
   "use strict";

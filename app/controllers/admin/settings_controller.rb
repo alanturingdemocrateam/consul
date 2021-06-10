@@ -16,7 +16,7 @@ class Admin::SettingsController < Admin::BaseController
   def update
     @setting = Setting.find(params[:id])
     @setting.update!(settings_params)
-    redirect_to request_referer, notice: t("admin.settings.flash.updated")
+    redirect_to request_referer, notice: setting_notice
   end
 
   def update_map
@@ -50,5 +50,13 @@ class Admin::SettingsController < Admin::BaseController
       return request.referer + params[:setting][:tab] if params[:setting][:tab]
 
       request.referer
+    end
+
+    def setting_notice
+      if params[:setting][:tab] == "#settings"
+        t("admin.machine_learning.setting")
+      else
+        t("admin.settings.flash.updated")
+      end
     end
 end

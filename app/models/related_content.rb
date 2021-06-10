@@ -9,7 +9,7 @@ class RelatedContent < ApplicationRecord
   belongs_to :parent_relationable, polymorphic: true, touch: true
   belongs_to :child_relationable, polymorphic: true, touch: true
   has_one :opposite_related_content, class_name: self.name, foreign_key: :related_content_id
-  has_many :related_content_scores
+  has_many :related_content_scores, dependent: :destroy
 
   validates :parent_relationable_id, presence: true
   validates :parent_relationable_type, presence: true
@@ -21,6 +21,14 @@ class RelatedContent < ApplicationRecord
   after_create :create_author_score
 
   scope :not_hidden, -> { where(hidden_at: nil) }
+  scope :from_users, -> { where(machine_learning: false) }
+  scope :from_machine_learning, -> { where(machine_learning: true) }
+  scope :for_proposals, -> do
+    where(parent_relationable_type: "Proposal", child_relationable_type: "Proposal")
+  end
+  scope :for_investments, -> do
+    where(parent_relationable_type: "Budget::Investment", child_relationable_type: "Budget::Investment")
+  end
 
   def score_positive(user)
     score(RelatedContentScore::SCORES[:POSITIVE], user)
@@ -37,8 +45,11 @@ class RelatedContent < ApplicationRecord
   private
 
     def create_opposite_related_content
-      related_content = RelatedContent.create!(opposite_related_content: self, parent_relationable: child_relationable,
-                                               child_relationable: parent_relationable, author: author)
+      related_content = RelatedContent.create!(opposite_related_content: self,
+                                               parent_relationable: child_relationable,
+                                               child_relationable: parent_relationable,
+                                               machine_learning: self.machine_learning,
+                                               author: author)
       self.opposite_related_content = related_content
     end
 

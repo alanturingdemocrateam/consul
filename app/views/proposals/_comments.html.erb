@@ -1,6 +1,13 @@
-<% cache [locale_and_user_status, @current_order, commentable_cache_key(@proposal), @comment_tree.comments, @comment_tree.comment_authors, @proposal.comments_count] do %>
-  <div class="row comments">
-    <div id="comments" class="small-12 column">
+<div class="row comments">
+  <div id="comments" class="small-12 column">
+    <%= render "shared/machine_learning_comments_summary", commentable: @proposal %>
+
+    <% cache [locale_and_user_status,
+              @current_order,
+              commentable_cache_key(@proposal),
+              @comment_tree.comments,
+              @comment_tree.comment_authors,
+              @proposal.comments_count] do %>
       <%= render "shared/wide_order_selector", i18n_namespace: "comments" %>
 
       <% if user_signed_in? %>
@@ -12,6 +19,6 @@
 
       <%= render "comments/comment_list", comments: @comment_tree.root_comments %>
       <%= paginate @comment_tree.root_comments %>
-    </div>
+    <% end %>
   </div>
-<% end %>
+</div>
