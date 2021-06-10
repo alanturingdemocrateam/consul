@@ -13,10 +13,9 @@ Technique used: NNMF and Euclidean distance between proposals.
 
 
 # In[2]:
-import os
 
-config_file = os.getcwd() + '/public/machine_learning/scripts/proposalsrelated_tags_nmf.ini'
-logging_file = os.getcwd() + '/public/machine_learning/scripts/proposalsrelated_tags_nmf.log'
+config_file = '../data/proposalsrelated_tags_nmf.ini'
+logging_file = '../data/proposalsrelated_tags_nmf.log'
 
 # Read the configuration file
 import configparser
@@ -46,26 +45,26 @@ logging_level = config['LOGGING']['logging_level']
 
 
 # Input file:
-inputjsonfile = os.getcwd() + '/public/machine_learning/data/proposals.json'
+inputjsonfile = '../data/proposals.json'
 col_id = 'id'
 col_title = 'title'
 cols_content = ['title','description','summary']
 
 # Output files:
-#topics_tags_filename_nofa = os.getcwd() + '/public/machine_learning/data/ml_topics_tags_b.json'
-topics_tags_filename = os.getcwd() + '/public/machine_learning/data/ml_topics_tags.json'
+#topics_tags_filename_nofa = '../data/ml_topics_tags_b.json'
+topics_tags_filename = '../data/ml_topics_tags.json'
 
-#repr_prop_filename_nofa = os.getcwd() + '/public/machine_learning/data/ml_repr_props_b.json'
-repr_prop_filename = os.getcwd() + '/public/machine_learning/data/ml_repr_props.json'
+#repr_prop_filename_nofa = '../data/ml_repr_props_b.json'
+repr_prop_filename = '../data/ml_repr_props.json'
 
-#taggings_filename_nofa = os.getcwd() + '/public/machine_learning/data/ml_taggings_b.json'
-taggings_filename = os.getcwd() + '/public/machine_learning/data/ml_taggings.json'
+#taggings_filename_nofa = '../data/ml_taggings_b.json'
+taggings_filename = '../data/ml_taggings.json'
 
-#tags_filename_nofa = os.getcwd() + '/public/machine_learning/data/ml_tags_b.json'
-tags_filename = os.getcwd() + '/public/machine_learning/data/ml_tags.json'
+#tags_filename_nofa = '../data/ml_tags_b.json'
+tags_filename = '../data/ml_tags.json'
 
-#related_props_filename_nofa = os.getcwd() + '/public/machine_learning/data/ml_relat_props_b.json'
-related_props_filename = os.getcwd() + '/public/machine_learning/data/ml_relat_props.json'
+#related_props_filename_nofa = '../data/ml_relat_props_b.json'
+related_props_filename = '../data/ml_relat_props.json'
 
 related_props_cols = ['id']+['related'+str(num) for num in range(1,numb_related_proposals+1)]
 

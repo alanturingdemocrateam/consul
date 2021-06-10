@@ -8,7 +8,6 @@ class MachineLearning
   def initialize(job)
     @job = job
     @user = job.user
-    @script = SCRIPTS_FOLDER.join(job.script)
     @previous_modified_date = set_previous_modified_date
   end
 
@@ -126,7 +125,7 @@ class MachineLearning
     end
 
     def run_machine_learning_scripts
-      output = `python #{script} 2>&1`
+      output = `cd #{SCRIPTS_FOLDER} && python #{job.script} 2>&1`
       result = $?.success?
       if result == false
         job.update!(finished_at: Time.current, error: output)

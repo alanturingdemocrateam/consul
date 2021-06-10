@@ -19,28 +19,11 @@ Technique used: GloVe embeddings and TextRank.
 #!wget http://dcc.uchile.cl/~jperez/word-embeddings/glove-sbwc.i25.vec.gz
 #!gunzip glove-sbwc*.gz 
 
-import os
-import urllib.request
-import gzip
-
-if os.path.isfile(os.getcwd() + '/public/machine_learning/scripts/glove-sbwc.i25.vec'):
-    print('File glove file glove-sbwc.i25.vec already exists')
-else:
-    print('Downloading glove file from http://dcc.uchile.cl/~jperez/word-embeddings/glove-sbwc.i25.vec.gz')
-    urllib.request.urlretrieve ('http://dcc.uchile.cl/~jperez/word-embeddings/glove-sbwc.i25.vec.gz', os.getcwd() + '/public/machine_learning/scripts/glove-sbwc.i25.vec.gz')
-
-    print('Unzipping glove file glove-sbwc.i25.vec.gz')
-    fp = open(os.getcwd() + '/public/machine_learning/scripts/glove-sbwc.i25.vec', 'wb')
-    with gzip.open(os.getcwd() + '/public/machine_learning/scripts/glove-sbwc.i25.vec.gz', 'rb') as f:
-        bindata = f.read()
-        fp.write(bindata)
-        fp.close()
-
 # In[3]:
 
 
-config_file = os.getcwd() + '/public/machine_learning/scripts/comments_textrank.ini'
-logging_file = os.getcwd() + '/public/machine_learning/scripts/comments_textrank.log'
+config_file = '../data/comments_textrank.ini'
+logging_file = '../data/comments_textrank.log'
 
 # Read the configuration file
 import configparser
@@ -51,7 +34,7 @@ sent_token_lang = config['PREPROCESSING']['sent_token_lang']
 stopwords_lang = config['PREPROCESSING']['stopwords_lang']
 nltk_download = config['PREPROCESSING'].getboolean('nltk_download')
 
-glove_file = os.getcwd() + '/public/machine_learning/scripts/' + config['SUMMARISATION']['glove_file']
+glove_file = '../data/' + config['SUMMARISATION']['glove_file']
 threshold_factor = config['SUMMARISATION'].getfloat('threshold_factor')
 max_size_of_summaries = config['SUMMARISATION'].getint('max_size_of_summaries')
 
@@ -62,13 +45,13 @@ logging_level = config['LOGGING']['logging_level']
 
 
 # Input file:
-inputjsonfile = os.getcwd() + '/public/machine_learning/data/comments.json'
+inputjsonfile = '../data/comments.json'
 col_id = 'commentable_id'
 col_content = 'body'
 
 # Output files:
-comments_summaries_filename_nofa = os.getcwd() + '/public/machine_learning/data/ml_comments_summaries_b.json'
-comments_summaries_filename = os.getcwd() + '/public/machine_learning/data/ml_comments_summaries.json'
+comments_summaries_filename_nofa = '../data/ml_comments_summaries_b.json'
+comments_summaries_filename = '../data/ml_comments_summaries.json'
 
 tqdm_notebook = True
 

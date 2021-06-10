@@ -207,8 +207,8 @@ describe MachineLearning do
     it "returns true if python script executed correctly" do
       machine_learning = MachineLearning.new(job)
 
-      python_script = MachineLearning::SCRIPTS_FOLDER.join("script.py")
-      expect(machine_learning).to receive(:`).with("python #{python_script} 2>&1") do
+      command = "cd #{MachineLearning::SCRIPTS_FOLDER} && python script.py 2>&1"
+      expect(machine_learning).to receive(:`).with(command) do
         Process.waitpid Process.fork { exit 0 }
       end
 
@@ -224,8 +224,8 @@ describe MachineLearning do
     it "returns false if python script errored" do
       machine_learning = MachineLearning.new(job)
 
-      python_script = MachineLearning::SCRIPTS_FOLDER.join("script.py")
-      expect(machine_learning).to receive(:`).with("python #{python_script} 2>&1") do
+      command = "cd #{MachineLearning::SCRIPTS_FOLDER} && python script.py 2>&1"
+      expect(machine_learning).to receive(:`).with(command) do
         Process.waitpid Process.fork { abort "error message" }
       end
 
