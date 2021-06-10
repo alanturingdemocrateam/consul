@@ -57,7 +57,7 @@ describe "Machine learning" do
     select "proposalsrelated_tags_nmf_1.py", from: :script
     click_button "Execute script"
 
-    expect(page).to have_content "Machine learning content has been generated successfully"
+    expect(page).to have_content "The last script has been executed successfully."
     expect(page).to have_content "You will receive an email in #{admin.email} when the script finishes "\
                                  "running. You can then select which generated content you want to display."
 
@@ -188,7 +188,7 @@ describe "Machine learning" do
     select "comments_textrank_1.py", from: :script
     click_button "Execute script"
 
-    expect(page).to have_content "Machine learning content has been generated successfully"
+    expect(page).to have_content "The last script has been executed successfully."
 
     within "#machine_learning_tabs" do
       click_link "Settings"
@@ -247,7 +247,7 @@ describe "Machine learning" do
     select "comments_textrank_1.py", from: :script
     click_button "Execute script"
 
-    expect(page).to have_content "Machine learning content has been generated successfully"
+    expect(page).to have_content "The last script has been executed successfully."
 
     visit admin_machine_learning_path
 

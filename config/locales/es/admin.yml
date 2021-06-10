@@ -1669,7 +1669,7 @@ es:
         title: "Cómo funciona el the machine learning"
         scripts: "La lista para los scripts disponibles es generada por los archivos ubicados en la carpeta <code>lib/machine_learning/scripts</code>."
       notice:
-        success: "El contenido ha sido generado correctamente."
+        success: "El último script se ha ejecutado correctamente."
         error: "Se ha producido un error. Más información sobre el error a continuación."
         working: "El script se está ejecutando. El administrador que lo ejecutó recibirá un email cuando termine."
         delete_generated_content: "El contenido generado se ha borrado correctamente."
