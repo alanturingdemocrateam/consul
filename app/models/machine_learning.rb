@@ -170,14 +170,16 @@ class MachineLearning
       json_data.each do |related|
         id = related.delete(:id)
         related.each do |_, related_id|
-          attributes = {
-            parent_relationable_id: id,
-            parent_relationable_type: "Proposal",
-            child_relationable_id: related_id,
-            child_relationable_type: "Proposal"
-          }
-          unless RelatedContent.find_by(attributes)
-            RelatedContent.create!(attributes.merge(machine_learning: true, author: user))
+          if related_id.present?
+            attributes = {
+              parent_relationable_id: id,
+              parent_relationable_type: "Proposal",
+              child_relationable_id: related_id,
+              child_relationable_type: "Proposal"
+            }
+            unless RelatedContent.find_by(attributes)
+              RelatedContent.create!(attributes.merge(machine_learning: true, author: user))
+            end
           end
         end
       end
@@ -189,14 +191,16 @@ class MachineLearning
       json_data.each do |related|
         id = related.delete(:id)
         related.each do |_, related_id|
-          attributes = {
-            parent_relationable_id: id,
-            parent_relationable_type: "Budget::Investment",
-            child_relationable_id: related_id,
-            child_relationable_type: "Budget::Investment"
-          }
-          unless RelatedContent.find_by(attributes)
-            RelatedContent.create!(attributes.merge(machine_learning: true, author: user))
+          if related_id.present?
+            attributes = {
+              parent_relationable_id: id,
+              parent_relationable_type: "Budget::Investment",
+              child_relationable_id: related_id,
+              child_relationable_type: "Budget::Investment"
+            }
+            unless RelatedContent.find_by(attributes)
+              RelatedContent.create!(attributes.merge(machine_learning: true, author: user))
+            end
           end
         end
       end
