@@ -1650,7 +1650,7 @@ en:
       tags_description: "Generates automatic tags on all items that can be tagged on."
       cancel: "Cancel operation"
       cancel_alert: "This action will cancel the current script and it will be necessary to run the script again."
-      script_info: "You will receive an email in %{email} when the script finishes running. You can then select which generated content you want to display."
+      script_info: "You will receive an email in %{email} when the script finishes running."
       select_script: "Select pyhton script to execute"
       execute_script: "Execute script"
       executed_by: "Executed by:"

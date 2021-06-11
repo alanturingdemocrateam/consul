@@ -58,8 +58,8 @@ describe "Machine learning" do
     click_button "Execute script"
 
     expect(page).to have_content "The last script has been executed successfully."
-    expect(page).to have_content "You will receive an email in #{admin.email} when the script finishes "\
-                                 "running. You can then select which generated content you want to display."
+    expect(page).to have_content "You will receive an email in #{admin.email} when the script "\
+                                 "finishes running."
 
     expect(page).to have_content "Select pyhton script to execute"
     expect(page).to have_button "Execute script"
@@ -149,8 +149,8 @@ describe "Machine learning" do
     expect(page).to have_content "Script name: #{job.script}"
     expect(page).to have_content "Error: Error description"
 
-    expect(page).to have_content "You will receive an email in #{admin.email} when the script finishes "\
-                                 "running. You can then select which generated content you want to display."
+    expect(page).to have_content "You will receive an email in #{admin.email} when the script "\
+                                 "finishes running."
 
     expect(page).to have_content "Select pyhton script to execute"
     expect(page).to have_button "Execute script"

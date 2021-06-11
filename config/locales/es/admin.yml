@@ -1651,7 +1651,7 @@ es:
       delete_generated_content_alert: "Esta acción borrará todo el contenido generado por Machine Learning y será necesario ejecutar el script de nuevo."
       cancel: "Cancelar operación"
       cancel_alert: "Esta acción cancelará el script actual y será necesario ejecutar el script de nuevo."
-      script_info: "Recibirás un email en %{email} cuando el script termine de ejecutarse. Después puedes selecconar que contenido generado deseas mostrar."
+      script_info: "Recibirás un email en %{email} cuando el script termine de ejecutarse."
       select_script: "Seleccione el script pyhton a ejecutar"
       execute_script: "Ejecutar script"
       executed_by: "Ejecutado por:"
