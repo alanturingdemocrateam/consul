@@ -704,6 +704,7 @@ es:
           mailers: "Correos"
           management: "Gestión"
           welcome: "Bienvenido/a"
+          machine_learning: "IA / Machine Learning"
         buttons:
           save: "Guardar cambios"
           content_block:
@@ -721,6 +722,7 @@ es:
       debates: "Debates"
       comments: "Comentarios"
       local_census_records: Gestionar censo local
+      machine_learning: "IA / Machine learning"
     administrators:
       index:
         title: Administradores
@@ -1633,3 +1635,41 @@ es:
           created: Registros creados
         local_census_records:
           no_records_found: No se han encontrado registros.
+    machine_learning:
+      title: "IA / Machine learning"
+      help_text: "Esta Funcionalidad es experimental."
+      tab_help: "Ayuda"
+      tab_settings: "Configuración"
+      tab_scripts: "Ejecutar script"
+      comments_summary: "Resumen de comentarios"
+      comments_summary_description: "Muestra un resumen de comentarios generado automáticamente en todos los elementos que pueden ser comentados."
+      related_content: "Contenido relacionado"
+      related_content_description: "Añade contenido relacionado generado automáticamente a las propuestas y proyectos de presupuestos participativos."
+      tags: "Etiquetas"
+      tags_description: "Genera etiquetas automáticas para todos los elementos que pueden ser etiquetados."
+      delete_generated_content: "Borrar contenido generado"
+      delete_generated_content_alert: "Esta acción borrará todo el contenido generado por Machine Learning y será necesario ejecutar el script de nuevo."
+      cancel: "Cancelar operación"
+      cancel_alert: "Esta acción cancelará el script actual y será necesario ejecutar el script de nuevo."
+      script_info: "Recibirás un email en %{email} cuando el script termine de ejecutarse."
+      select_script: "Seleccione el script pyhton a ejecutar"
+      execute_script: "Ejecutar script"
+      executed_by: "Ejecutado por:"
+      script_name: "Nombre del script:"
+      error: "Error:"
+      started_at: "Empezado a las:"
+      feature_disabled: "Esta funcionalidad está deshabilitada. Para utilizar Machine Learning puedes habilitarla desde la %{link}."
+      feature_disabled_link: "página de configuración"
+      last_execution: "Última ejecución"
+      excuted_script: "Script ejecutado:"
+      output_files: "Ficheros de salida:"
+      no_content: "Todavía no se ha generado contenido."
+      setting: "La configuración para mostrar/ocultar el contenido se ha actualizado correctamente."
+      help:
+        title: "Cómo funciona el the machine learning"
+        scripts: "La lista para los scripts disponibles es generada por los archivos ubicados en la carpeta <code>lib/machine_learning/scripts</code>."
+      notice:
+        success: "El último script se ha ejecutado correctamente."
+        error: "Se ha producido un error. Más información sobre el error a continuación."
+        working: "El script se está ejecutando. El administrador que lo ejecutó recibirá un email cuando termine."
+        delete_generated_content: "El contenido generado se ha borrado correctamente."
