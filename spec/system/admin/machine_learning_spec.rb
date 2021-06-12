@@ -238,6 +238,7 @@ describe "Machine learning" do
     allow_any_instance_of(MachineLearning).to receive(:run) do
       MachineLearningJob.first.update! finished_at: Time.current
       create :machine_learning_info, script: "comments_textrank_1.py", kind: "comments_summary"
+      Dir.mkdir Rails.root.join("public", "machine_learning", "data")
       comments_file = MachineLearning::DATA_FOLDER.join(MachineLearning.comments_filename)
       File.open(comments_file, "w") { |file| file.write([].to_json) }
       comments_summary_file = MachineLearning::DATA_FOLDER.join(MachineLearning.comments_summary_filename)

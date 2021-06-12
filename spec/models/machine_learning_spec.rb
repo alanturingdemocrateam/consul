@@ -133,6 +133,7 @@ describe MachineLearning do
       last_proposal = create :proposal
 
       machine_learning = MachineLearning.new(job)
+      Dir.mkdir Rails.root.join("public", "machine_learning", "data")
       machine_learning.send(:export_proposals_to_json)
 
       json_file = MachineLearning::DATA_FOLDER.join("proposals.json")
@@ -159,6 +160,7 @@ describe MachineLearning do
       last_budget_investment = create :budget_investment
 
       machine_learning = MachineLearning.new(job)
+      Dir.mkdir Rails.root.join("public", "machine_learning", "data")
       machine_learning.send(:export_budget_investments_to_json)
 
       json_file = MachineLearning::DATA_FOLDER.join("budget_investments.json")
@@ -183,6 +185,7 @@ describe MachineLearning do
       last_comment = create :comment
 
       machine_learning = MachineLearning.new(job)
+      Dir.mkdir Rails.root.join("public", "machine_learning", "data")
       machine_learning.send(:export_comments_to_json)
 
       json_file = MachineLearning::DATA_FOLDER.join("comments.json")
