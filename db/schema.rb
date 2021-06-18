@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_23_100638) do
+ActiveRecord::Schema.define(version: 2021_07_02_142300) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -875,6 +875,26 @@ ActiveRecord::Schema.define(version: 2021_01_23_100638) do
     t.index ["user_id"], name: "index_locks_on_user_id"
   end
 
+  create_table "machine_learning_infos", force: :cascade do |t|
+    t.string "kind"
+    t.datetime "generated_at"
+    t.string "script"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "machine_learning_jobs", force: :cascade do |t|
+    t.datetime "started_at"
+    t.datetime "finished_at"
+    t.string "script"
+    t.integer "pid"
+    t.string "error"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_machine_learning_jobs_on_user_id"
+  end
+
   create_table "managers", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.index ["user_id"], name: "index_managers_on_user_id"
@@ -918,6 +938,30 @@ ActiveRecord::Schema.define(version: 2021_01_23_100638) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["status_id"], name: "index_milestones_on_status_id"
+  end
+
+  create_table "ml_summary_comments", force: :cascade do |t|
+    t.integer "commentable_id"
+    t.string "commentable_type"
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "ml_taggings", force: :cascade do |t|
+    t.bigint "tagging_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "kind"
+    t.index ["tagging_id"], name: "index_ml_taggings_on_tagging_id", unique: true
+  end
+
+  create_table "ml_tags", force: :cascade do |t|
+    t.bigint "tag_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "kind"
+    t.index ["tag_id"], name: "index_ml_tags_on_tag_id", unique: true
   end
 
   create_table "moderators", id: :serial, force: :cascade do |t|
@@ -1278,6 +1322,8 @@ ActiveRecord::Schema.define(version: 2021_01_23_100638) do
     t.datetime "hidden_at"
     t.integer "related_content_scores_count", default: 0
     t.integer "author_id"
+    t.boolean "machine_learning", default: false
+    t.integer "machine_learning_score", default: 0
     t.index ["child_relationable_type", "child_relationable_id"], name: "index_related_contents_on_child_relationable"
     t.index ["hidden_at"], name: "index_related_contents_on_hidden_at"
     t.index ["parent_relationable_id", "parent_relationable_type", "child_relationable_id", "child_relationable_type"], name: "unique_parent_child_related_content", unique: true
@@ -1704,7 +1750,10 @@ ActiveRecord::Schema.define(version: 2021_01_23_100638) do
   add_foreign_key "legislation_draft_versions", "legislation_processes"
   add_foreign_key "legislation_proposals", "legislation_processes"
   add_foreign_key "locks", "users"
+  add_foreign_key "machine_learning_jobs", "users"
   add_foreign_key "managers", "users"
+  add_foreign_key "ml_taggings", "taggings"
+  add_foreign_key "ml_tags", "tags"
   add_foreign_key "moderators", "users"
   add_foreign_key "notifications", "users"
   add_foreign_key "organizations", "users"

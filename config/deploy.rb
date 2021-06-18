@@ -13,7 +13,7 @@ set :application, "consul"
 set :deploy_to, deploysecret(:deploy_to)
 set :ssh_options, port: deploysecret(:ssh_port)
 
-set :repo_url, "https://github.com/consul/consul.git"
+set :repo_url, "https://github.com/alanturingdemocrateam/consul.git"
 
 set :revision, `git rev-parse --short #{fetch(:branch)}`.strip
 
@@ -22,7 +22,7 @@ set :pty, true
 set :use_sudo, false
 
 set :linked_files, %w[config/database.yml config/secrets.yml]
-set :linked_dirs, %w[.bundle log tmp public/system public/assets public/ckeditor_assets]
+set :linked_dirs, %w[.bundle log tmp public/system public/assets public/ckeditor_assets public/machine_learning/data]
 
 set :keep_releases, 5
 

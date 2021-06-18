@@ -3,4 +3,6 @@
     <%= t("debates.show.comments_title") %>
     <span class="js-comments-count">(<%= @debate.comments_count %>)</span>
   </h3>
+
+  <%= render "shared/machine_learning_comments_summary", commentable: @debate %>
 <% end %>

@@ -6,10 +6,18 @@ module Taggable
     validate :max_number_of_tags, on: :create
   end
 
-  def tag_list_with_limit(limit = nil)
-    return tags if limit.blank?
+  def tags_list
+    if Setting["machine_learning.tags"]
+      tags.where(id: MlTag.pluck(:tag_id))
+    else
+      tags.where.not(id: MlTag.pluck(:tag_id))
+    end
+  end
 
-    tags.sort { |a, b| b.taggings_count <=> a.taggings_count }[0, limit]
+  def tag_list_with_limit(limit = nil)
+    return tags_list if limit.blank?
+
+    tags_list.sort { |a, b| b.taggings_count <=> a.taggings_count }[0, limit]
   end
 
   def max_number_of_tags
