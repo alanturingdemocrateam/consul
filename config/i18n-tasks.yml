@@ -167,6 +167,7 @@ ignore_unused:
   - "admin.homepage.*"
   - "admin.dashboard.administrator_tasks.index.filter*"
   - "admin.dashboard.actions.index.default.*"
+  - "admin.machine_learning.*"
   - "admin.users.index.filter*"
   - "moderation.comments.index.filter*"
   - "moderation.comments.index.orders.*"
