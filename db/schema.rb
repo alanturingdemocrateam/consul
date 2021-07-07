@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_02_142300) do
+ActiveRecord::Schema.define(version: 2021_05_19_115700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -948,22 +948,6 @@ ActiveRecord::Schema.define(version: 2021_07_02_142300) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "ml_taggings", force: :cascade do |t|
-    t.bigint "tagging_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "kind"
-    t.index ["tagging_id"], name: "index_ml_taggings_on_tagging_id", unique: true
-  end
-
-  create_table "ml_tags", force: :cascade do |t|
-    t.bigint "tag_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "kind"
-    t.index ["tag_id"], name: "index_ml_tags_on_tag_id", unique: true
-  end
-
   create_table "moderators", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.index ["user_id"], name: "index_moderators_on_user_id"
@@ -1752,8 +1736,6 @@ ActiveRecord::Schema.define(version: 2021_07_02_142300) do
   add_foreign_key "locks", "users"
   add_foreign_key "machine_learning_jobs", "users"
   add_foreign_key "managers", "users"
-  add_foreign_key "ml_taggings", "taggings"
-  add_foreign_key "ml_tags", "tags"
   add_foreign_key "moderators", "users"
   add_foreign_key "notifications", "users"
   add_foreign_key "organizations", "users"

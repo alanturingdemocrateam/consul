@@ -22,7 +22,6 @@ class MachineLearning
       if updated_file?(MachineLearning.proposals_taggings_filename) && updated_file?(MachineLearning.proposals_tags_filename)
         cleanup_proposals_tags!
         import_ml_proposals_tags
-        import_ml_proposals_taggings
         update_machine_learning_info_for("tags")
       end
 
@@ -219,13 +218,13 @@ class MachineLearning
     end
 
     def cleanup_proposals_tags!
-      MlTagging.where(kind: "proposals").find_each(&:destroy!)
-      MlTag.where(kind: "proposals").find_each(&:destroy!)
+      Tagging.where(context: "ml_proposal_tags").find_each(&:destroy!)
+      Tag.find_each { |tag| tag.destroy! if Tagging.where(tag: tag).empty? }
     end
 
     def cleanup_investments_tags!
-      MlTagging.where(kind: "investments").find_each(&:destroy!)
-      MlTag.where(kind: "investments").find_each(&:destroy!)
+      Tagging.where(context: "ml_investment_tags").find_each(&:destroy!)
+      Tag.find_each { |tag| tag.destroy! if Tagging.where(tag: tag).empty? }
     end
 
     def cleanup_proposals_related_content!
@@ -325,39 +324,31 @@ class MachineLearning
     end
 
     def import_ml_proposals_tags
-      @offset = MlTag.maximum("id") + 1 rescue 0
+      ids = {}
       json_file = DATA_FOLDER.join(MachineLearning.proposals_tags_filename)
       json_data = JSON.parse(File.read(json_file)).each(&:deep_symbolize_keys!)
       json_data.each do |attributes|
-        ml_tag_id = attributes.delete(:id) + @offset
         if attributes[:name].present?
+          attributes.delete(:taggings_count)
           if attributes[:name].length >= 150
             attributes[:name] = attributes[:name].truncate(150)
           end
-          tag = Tag.find_by(name: attributes[:name])
-          tag = Tag.create!(attributes) unless tag.present?
-          MlTag.create!(id: ml_tag_id, tag: tag, kind: "proposals") unless MlTag.find_by(tag_id: tag.id).present?
+          tag = Tag.find_or_create_by!(name: attributes[:name])
+          ids[attributes[:id]] = tag.id
         end
       end
-    end
 
-    def import_ml_proposals_taggings
       json_file = DATA_FOLDER.join(MachineLearning.proposals_taggings_filename)
       json_data = JSON.parse(File.read(json_file)).each(&:deep_symbolize_keys!)
       json_data.each do |attributes|
-        ml_tag_id = attributes[:tag_id] + @offset
-        if MlTag.find_by(id: ml_tag_id).present?
-          attributes[:tag_id] = MlTag.find(ml_tag_id).tag_id
-          attributes[:context] = "tags"
-          if Tag.find_by(id: attributes[:tag_id])
+        if attributes[:tag_id].present?
+          tag_id = ids[attributes[:tag_id]]
+          if Tag.find_by(id: tag_id)
             if attributes[:taggable_id].present?
+              attributes[:tag_id] = tag_id
               attributes[:taggable_type] = "Proposal"
-              unless Tagging.find_by(tag_id: attributes[:tag_id],
-                                     taggable_id: attributes[:taggable_id],
-                                     taggable_type: attributes[:taggable_type])
-                tagging = Tagging.create!(attributes)
-                MlTagging.create!(tagging: tagging, kind: "proposals")
-              end
+              attributes[:context] = "ml_proposal_tags"
+              Tagging.create!(attributes)
             end
           end
         end
@@ -365,39 +356,31 @@ class MachineLearning
     end
 
     def import_ml_investments_tags
-      @offset = MlTag.maximum("id") + 1 rescue 0
+      ids = {}
       json_file = DATA_FOLDER.join(MachineLearning.investments_tags_filename)
       json_data = JSON.parse(File.read(json_file)).each(&:deep_symbolize_keys!)
       json_data.each do |attributes|
-        ml_tag_id = attributes.delete(:id) + @offset
         if attributes[:name].present?
+          attributes.delete(:taggings_count)
           if attributes[:name].length >= 150
             attributes[:name] = attributes[:name].truncate(150)
           end
-          tag = Tag.find_by(name: attributes[:name])
-          tag = Tag.create!(attributes) unless tag.present?
-          MlTag.create!(id: ml_tag_id, tag: tag, kind: "investments") unless MlTag.find_by(tag_id: tag.id).present?
+          tag = Tag.find_or_create_by!(name: attributes[:name])
+          ids[attributes[:id]] = tag.id
         end
       end
-    end
 
-    def import_ml_investments_taggings
       json_file = DATA_FOLDER.join(MachineLearning.investments_taggings_filename)
       json_data = JSON.parse(File.read(json_file)).each(&:deep_symbolize_keys!)
       json_data.each do |attributes|
-        ml_tag_id = attributes[:tag_id] + @offset
-        if MlTag.find_by(id: ml_tag_id).present?
-          attributes[:tag_id] = MlTag.find(ml_tag_id).tag_id
-          attributes[:context] = "tags"
-          if Tag.find_by(id: attributes[:tag_id])
+        if attributes[:tag_id].present?
+          tag_id = ids[attributes[:tag_id]]
+          if Tag.find_by(id: tag_id)
             if attributes[:taggable_id].present?
+              attributes[:tag_id] = tag_id
               attributes[:taggable_type] = "Budget::Investment"
-              unless Tagging.find_by(tag_id: attributes[:tag_id],
-                                     taggable_id: attributes[:taggable_id],
-                                     taggable_type: attributes[:taggable_type])
-                tagging = Tagging.create!(attributes)
-                MlTagging.create!(tagging: tagging, kind: "investments")
-              end
+              attributes[:context] = "ml_investment_tags"
+              Tagging.create!(attributes)
             end
           end
         end

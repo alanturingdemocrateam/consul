@@ -7,14 +7,19 @@ class TagCloud
   end
 
   def tags
-    cloud_tags = resource_model_scoped.last_week.tag_counts.
-                     where("lower(name) NOT IN (?)", category_names + geozone_names + default_blacklist)
-    if Setting["machine_learning.tags"]
-      cloud_tags = cloud_tags.where(id: ml_tags)
-    else
-      cloud_tags = cloud_tags.where.not(id: ml_tags)
-    end
-    cloud_tags.order("#{table_name}_count": :desc, name: :asc).limit(10)
+    resource_model_scoped.
+    last_week.send(counts).
+    where("lower(name) NOT IN (?)", category_names + geozone_names + default_blacklist).
+    order("#{table_name}_count": :desc, name: :asc).
+    limit(10)
+  end
+
+  def counts
+    return :tag_counts unless Setting["machine_learning.tags"]
+    return :ml_proposal_tag_counts if self.is_a? Proposal
+    return :ml_investment_tag_counts if self.is_a? Budget::Investment
+
+    :tag_counts
   end
 
   def category_names
@@ -23,10 +28,6 @@ class TagCloud
 
   def geozone_names
     Geozone.all.map { |geozone| geozone.name.downcase }
-  end
-
-  def ml_tags
-    MlTag.pluck(:tag_id)
   end
 
   def resource_model_scoped

@@ -2,16 +2,16 @@ module Taggable
   extend ActiveSupport::Concern
 
   included do
-    acts_as_taggable
+    acts_as_taggable_on :tags, :ml_proposal_tags, :ml_investment_tags
     validate :max_number_of_tags, on: :create
   end
 
   def tags_list
-    if Setting["machine_learning.tags"]
-      tags.where(id: MlTag.pluck(:tag_id))
-    else
-      tags.where.not(id: MlTag.pluck(:tag_id))
-    end
+    return tags unless Setting["machine_learning.tags"]
+    return ml_proposal_tags if self.is_a? Proposal
+    return ml_investment_tags if self.is_a? Budget::Investment
+
+    tags
   end
 
   def tag_list_with_limit(limit = nil)

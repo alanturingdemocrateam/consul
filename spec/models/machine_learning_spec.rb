@@ -8,214 +8,292 @@ describe MachineLearning do
   let(:job) { create :machine_learning_job }
 
   describe "#cleanup_proposals_tags!" do
-    it "deletes proposals tags machine learning generated data" do
+    it "does not delete other machine learning generated data" do
       create :ml_summary_comment, commentable: create(:proposal)
+      create :ml_summary_comment, commentable: create(:budget_investment)
+
       create :related_content, :proposals, :from_machine_learning
       create :related_content, :budget_investments, :from_machine_learning
-      user_tag = create(:tag)
-      create(:tagging, tag: user_tag)
-      ml_proposal_tag = create(:tag)
-      MlTag.create!(tag: ml_proposal_tag, kind: "proposals")
-      MlTagging.create!(tagging: create(:tagging, tag: ml_proposal_tag), kind: "proposals")
-      ml_investment_tag = create(:tag)
-      MlTag.create!(tag: ml_investment_tag, kind: "investments")
-      MlTagging.create!(tagging: create(:tagging, tag: ml_investment_tag), kind: "investments")
 
-      expect(MlSummaryComment.count).to be 1
+      expect(MlSummaryComment.count).to be 2
       expect(RelatedContent.for_proposals.from_machine_learning.count).to be 2
       expect(RelatedContent.for_investments.from_machine_learning.count).to be 2
-      expect(Tag.count).to be 3
-      expect(MlTag.count).to be 2
-      expect(Tagging.count).to be 3
-      expect(MlTagging.count).to be 2
 
       machine_learning = MachineLearning.new(job)
       machine_learning.send(:cleanup_proposals_tags!)
 
-      expect(MlSummaryComment.count).to be 1
+      expect(MlSummaryComment.count).to be 2
       expect(RelatedContent.for_proposals.from_machine_learning.count).to be 2
       expect(RelatedContent.for_investments.from_machine_learning.count).to be 2
-      expect(Tag.count).to be 2
-      expect(Tag.all).to include user_tag
-      expect(Tag.all).to include ml_investment_tag
+    end
+
+    it "deletes proposals tags machine learning generated data" do
+      user_tag = create(:tag)
+      create(:tagging, tag: user_tag)
+
+      ml_proposal_tag = create(:tag)
+      create(:tagging, tag: ml_proposal_tag, context: "ml_proposal_tags")
+
+      ml_investment_tag = create(:tag)
+      create(:tagging, tag: ml_investment_tag, context: "ml_investment_tags")
+
+      common_tag = create(:tag)
+      create(:tagging, tag: common_tag)
+      create(:tagging, tag: common_tag, context: "ml_proposal_tags")
+      create(:tagging, tag: common_tag, context: "ml_investment_tags")
+
+      expect(Tag.count).to be 4
+      expect(Tagging.count).to be 6
+      expect(Tagging.where(context: "tags").count).to be 2
+      expect(Tagging.where(context: "ml_proposal_tags").count).to be 2
+      expect(Tagging.where(context: "ml_investment_tags").count).to be 2
+
+      machine_learning = MachineLearning.new(job)
+      machine_learning.send(:cleanup_proposals_tags!)
+
+      expect(Tag.count).to be 3
       expect(Tag.all).not_to include ml_proposal_tag
-      expect(Tagging.count).to be 2
-      expect(Tagging.all.map(&:tag_id)).to include user_tag.id
-      expect(Tagging.all.map(&:tag_id)).to include ml_investment_tag.id
-      expect(Tagging.all.map(&:tag_id)).not_to include ml_proposal_tag.id
-      expect(MlTag.count).to be 1
-      expect(MlTag.first.kind).to eq "investments"
-      expect(MlTagging.count).to be 1
-      expect(MlTagging.first.kind).to eq "investments"
+      expect(Tagging.count).to be 4
+      expect(Tagging.where(context: "tags").count).to be 2
+      expect(Tagging.where(context: "ml_proposal_tags")).to be_empty
+      expect(Tagging.where(context: "ml_investment_tags").count).to be 2
     end
   end
 
   describe "#cleanup_investments_tags!" do
-    it "deletes investments tags machine learning generated data" do
+    it "does not delete other machine learning generated data" do
       create :ml_summary_comment, commentable: create(:proposal)
+      create :ml_summary_comment, commentable: create(:budget_investment)
+
       create :related_content, :proposals, :from_machine_learning
       create :related_content, :budget_investments, :from_machine_learning
-      user_tag = create(:tag)
-      create(:tagging, tag: user_tag)
-      ml_proposal_tag = create(:tag)
-      MlTag.create!(tag: ml_proposal_tag, kind: "proposals")
-      MlTagging.create!(tagging: create(:tagging, tag: ml_proposal_tag), kind: "proposals")
-      ml_investment_tag = create(:tag)
-      MlTag.create!(tag: ml_investment_tag, kind: "investments")
-      MlTagging.create!(tagging: create(:tagging, tag: ml_investment_tag), kind: "investments")
 
-      expect(MlSummaryComment.count).to be 1
+      expect(MlSummaryComment.count).to be 2
       expect(RelatedContent.for_proposals.from_machine_learning.count).to be 2
       expect(RelatedContent.for_investments.from_machine_learning.count).to be 2
-      expect(Tag.count).to be 3
-      expect(MlTag.count).to be 2
-      expect(Tagging.count).to be 3
-      expect(MlTagging.count).to be 2
 
       machine_learning = MachineLearning.new(job)
       machine_learning.send(:cleanup_investments_tags!)
 
-      expect(MlSummaryComment.count).to be 1
+      expect(MlSummaryComment.count).to be 2
       expect(RelatedContent.for_proposals.from_machine_learning.count).to be 2
       expect(RelatedContent.for_investments.from_machine_learning.count).to be 2
-      expect(Tag.count).to be 2
-      expect(Tag.all).to include user_tag
-      expect(Tag.all).to include ml_proposal_tag
+    end
+
+    it "deletes investments tags machine learning generated data" do
+      user_tag = create(:tag)
+      create(:tagging, tag: user_tag)
+
+      ml_proposal_tag = create(:tag)
+      create(:tagging, tag: ml_proposal_tag, context: "ml_proposal_tags")
+
+      ml_investment_tag = create(:tag)
+      create(:tagging, tag: ml_investment_tag, context: "ml_investment_tags")
+
+      common_tag = create(:tag)
+      create(:tagging, tag: common_tag)
+      create(:tagging, tag: common_tag, context: "ml_proposal_tags")
+      create(:tagging, tag: common_tag, context: "ml_investment_tags")
+
+      expect(Tag.count).to be 4
+      expect(Tagging.count).to be 6
+      expect(Tagging.where(context: "tags").count).to be 2
+      expect(Tagging.where(context: "ml_proposal_tags").count).to be 2
+      expect(Tagging.where(context: "ml_investment_tags").count).to be 2
+
+      machine_learning = MachineLearning.new(job)
+      machine_learning.send(:cleanup_investments_tags!)
+
+      expect(Tag.count).to be 3
       expect(Tag.all).not_to include ml_investment_tag
-      expect(Tagging.count).to be 2
-      expect(Tagging.all.map(&:tag_id)).to include user_tag.id
-      expect(Tagging.all.map(&:tag_id)).to include ml_proposal_tag.id
-      expect(Tagging.all.map(&:tag_id)).not_to include ml_investment_tag.id
-      expect(MlTag.count).to be 1
-      expect(MlTag.first.kind).to eq "proposals"
-      expect(MlTagging.count).to be 1
-      expect(MlTagging.first.kind).to eq "proposals"
+      expect(Tagging.count).to be 4
+      expect(Tagging.where(context: "tags").count).to be 2
+      expect(Tagging.where(context: "ml_proposal_tags").count).to be 2
+      expect(Tagging.where(context: "ml_investment_tags")).to be_empty
     end
   end
 
   describe "#cleanup_proposals_related_content!" do
-    it "deletes proposals related content machine learning generated data" do
+    it "does not delete other machine learning generated data" do
       create :ml_summary_comment, commentable: create(:proposal)
-      create :related_content, :proposals, :from_machine_learning
-      create :related_content, :budget_investments, :from_machine_learning
-      tag = create(:tag)
-      MlTag.create!(tag: tag)
-      MlTagging.create!(tagging: create(:tagging, tag: tag))
+      create :ml_summary_comment, commentable: create(:budget_investment)
 
-      expect(MlSummaryComment.count).to be 1
-      expect(RelatedContent.for_proposals.from_machine_learning.count).to be 2
-      expect(RelatedContent.for_investments.from_machine_learning.count).to be 2
-      expect(Tag.count).to be 1
-      expect(MlTag.count).to be 1
-      expect(Tagging.count).to be 1
-      expect(MlTagging.count).to be 1
+      create(:tagging, tag: create(:tag))
+      create(:tagging, tag: create(:tag), context: "ml_proposal_tags")
+      create(:tagging, tag: create(:tag), context: "ml_investment_tags")
+
+      expect(MlSummaryComment.count).to be 2
+      expect(Tag.count).to be 3
+      expect(Tagging.count).to be 3
+      expect(Tagging.where(context: "tags").count).to be 1
+      expect(Tagging.where(context: "ml_proposal_tags").count).to be 1
+      expect(Tagging.where(context: "ml_investment_tags").count).to be 1
 
       machine_learning = MachineLearning.new(job)
       machine_learning.send(:cleanup_proposals_related_content!)
 
-      expect(MlSummaryComment.count).to be 1
+      expect(MlSummaryComment.count).to be 2
+      expect(Tag.count).to be 3
+      expect(Tagging.count).to be 3
+      expect(Tagging.where(context: "tags").count).to be 1
+      expect(Tagging.where(context: "ml_proposal_tags").count).to be 1
+      expect(Tagging.where(context: "ml_investment_tags").count).to be 1
+    end
+
+    it "deletes proposals related content machine learning generated data" do
+      create :related_content, :proposals
+      create :related_content, :budget_investments
+      create :related_content, :proposals, :from_machine_learning
+      create :related_content, :budget_investments, :from_machine_learning
+
+      expect(RelatedContent.for_proposals.from_users.count).to be 2
+      expect(RelatedContent.for_investments.from_users.count).to be 2
+      expect(RelatedContent.for_proposals.from_machine_learning.count).to be 2
+      expect(RelatedContent.for_investments.from_machine_learning.count).to be 2
+
+      machine_learning = MachineLearning.new(job)
+      machine_learning.send(:cleanup_proposals_related_content!)
+
+      expect(RelatedContent.for_proposals.from_users.count).to be 2
+      expect(RelatedContent.for_investments.from_users.count).to be 2
       expect(RelatedContent.for_proposals.from_machine_learning).to be_empty
       expect(RelatedContent.for_investments.from_machine_learning.count).to be 2
-      expect(Tag.count).to be 1
-      expect(MlTag.count).to be 1
-      expect(Tagging.count).to be 1
-      expect(MlTagging.count).to be 1
     end
   end
 
   describe "#cleanup_investments_related_content!" do
-    it "deletes budget investments related content machine learning generated data" do
+    it "does not delete other machine learning generated data" do
       create :ml_summary_comment, commentable: create(:proposal)
-      create :related_content, :proposals, :from_machine_learning
-      create :related_content, :budget_investments, :from_machine_learning
-      tag = create(:tag)
-      MlTag.create!(tag: tag)
-      MlTagging.create!(tagging: create(:tagging, tag: tag))
+      create :ml_summary_comment, commentable: create(:budget_investment)
 
-      expect(MlSummaryComment.count).to be 1
-      expect(RelatedContent.for_proposals.from_machine_learning.count).to be 2
-      expect(RelatedContent.for_investments.from_machine_learning.count).to be 2
-      expect(Tag.count).to be 1
-      expect(MlTag.count).to be 1
-      expect(Tagging.count).to be 1
-      expect(MlTagging.count).to be 1
+      create(:tagging, tag: create(:tag))
+      create(:tagging, tag: create(:tag), context: "ml_proposal_tags")
+      create(:tagging, tag: create(:tag), context: "ml_investment_tags")
+
+      expect(MlSummaryComment.count).to be 2
+      expect(Tag.count).to be 3
+      expect(Tagging.count).to be 3
+      expect(Tagging.where(context: "tags").count).to be 1
+      expect(Tagging.where(context: "ml_proposal_tags").count).to be 1
+      expect(Tagging.where(context: "ml_investment_tags").count).to be 1
 
       machine_learning = MachineLearning.new(job)
       machine_learning.send(:cleanup_investments_related_content!)
 
-      expect(MlSummaryComment.count).to be 1
+      expect(MlSummaryComment.count).to be 2
+      expect(Tag.count).to be 3
+      expect(Tagging.count).to be 3
+      expect(Tagging.where(context: "tags").count).to be 1
+      expect(Tagging.where(context: "ml_proposal_tags").count).to be 1
+      expect(Tagging.where(context: "ml_investment_tags").count).to be 1
+    end
+
+    it "deletes proposals related content machine learning generated data" do
+      create :related_content, :proposals
+      create :related_content, :budget_investments
+      create :related_content, :proposals, :from_machine_learning
+      create :related_content, :budget_investments, :from_machine_learning
+
+      expect(RelatedContent.for_proposals.from_users.count).to be 2
+      expect(RelatedContent.for_investments.from_users.count).to be 2
+      expect(RelatedContent.for_proposals.from_machine_learning.count).to be 2
+      expect(RelatedContent.for_investments.from_machine_learning.count).to be 2
+
+      machine_learning = MachineLearning.new(job)
+      machine_learning.send(:cleanup_investments_related_content!)
+
+      expect(RelatedContent.for_proposals.from_users.count).to be 2
+      expect(RelatedContent.for_investments.from_users.count).to be 2
       expect(RelatedContent.for_proposals.from_machine_learning.count).to be 2
       expect(RelatedContent.for_investments.from_machine_learning).to be_empty
-      expect(Tag.count).to be 1
-      expect(MlTag.count).to be 1
-      expect(Tagging.count).to be 1
-      expect(MlTagging.count).to be 1
     end
   end
 
   describe "#cleanup_proposals_comments_summary!" do
+    it "does not delete other machine learning generated data" do
+      create :related_content, :proposals, :from_machine_learning
+      create :related_content, :budget_investments, :from_machine_learning
+
+      create(:tagging, tag: create(:tag))
+      create(:tagging, tag: create(:tag), context: "ml_proposal_tags")
+      create(:tagging, tag: create(:tag), context: "ml_investment_tags")
+
+      expect(RelatedContent.for_proposals.from_machine_learning.count).to be 2
+      expect(RelatedContent.for_investments.from_machine_learning.count).to be 2
+      expect(Tag.count).to be 3
+      expect(Tagging.count).to be 3
+      expect(Tagging.where(context: "tags").count).to be 1
+      expect(Tagging.where(context: "ml_proposal_tags").count).to be 1
+      expect(Tagging.where(context: "ml_investment_tags").count).to be 1
+
+      machine_learning = MachineLearning.new(job)
+      machine_learning.send(:cleanup_proposals_comments_summary!)
+
+      expect(RelatedContent.for_proposals.from_machine_learning.count).to be 2
+      expect(RelatedContent.for_investments.from_machine_learning.count).to be 2
+      expect(Tag.count).to be 3
+      expect(Tagging.count).to be 3
+      expect(Tagging.where(context: "tags").count).to be 1
+      expect(Tagging.where(context: "ml_proposal_tags").count).to be 1
+      expect(Tagging.where(context: "ml_investment_tags").count).to be 1
+    end
+
     it "deletes proposals comments summary machine learning generated data" do
       create :ml_summary_comment, commentable: create(:proposal)
       create :ml_summary_comment, commentable: create(:budget_investment)
-      create :related_content, :proposals, :from_machine_learning
-      create :related_content, :budget_investments, :from_machine_learning
-      tag = create(:tag)
-      MlTag.create!(tag: tag)
-      MlTagging.create!(tagging: create(:tagging, tag: tag))
 
       expect(MlSummaryComment.where(commentable_type: "Proposal").count).to be 1
       expect(MlSummaryComment.where(commentable_type: "Budget::Investment").count).to be 1
-      expect(RelatedContent.for_proposals.from_machine_learning.count).to be 2
-      expect(RelatedContent.for_investments.from_machine_learning.count).to be 2
-      expect(Tag.count).to be 1
-      expect(MlTag.count).to be 1
-      expect(Tagging.count).to be 1
-      expect(MlTagging.count).to be 1
 
       machine_learning = MachineLearning.new(job)
       machine_learning.send(:cleanup_proposals_comments_summary!)
 
       expect(MlSummaryComment.where(commentable_type: "Proposal")).to be_empty
       expect(MlSummaryComment.where(commentable_type: "Budget::Investment").count).to be 1
-      expect(RelatedContent.for_proposals.from_machine_learning.count).to be 2
-      expect(RelatedContent.for_investments.from_machine_learning.count).to be 2
-      expect(Tag.count).to be 1
-      expect(MlTag.count).to be 1
-      expect(Tagging.count).to be 1
-      expect(MlTagging.count).to be 1
     end
   end
 
   describe "#cleanup_investments_comments_summary!" do
+    it "does not delete other machine learning generated data" do
+      create :related_content, :proposals, :from_machine_learning
+      create :related_content, :budget_investments, :from_machine_learning
+
+      create(:tagging, tag: create(:tag))
+      create(:tagging, tag: create(:tag), context: "ml_proposal_tags")
+      create(:tagging, tag: create(:tag), context: "ml_investment_tags")
+
+      expect(RelatedContent.for_proposals.from_machine_learning.count).to be 2
+      expect(RelatedContent.for_investments.from_machine_learning.count).to be 2
+      expect(Tag.count).to be 3
+      expect(Tagging.count).to be 3
+      expect(Tagging.where(context: "tags").count).to be 1
+      expect(Tagging.where(context: "ml_proposal_tags").count).to be 1
+      expect(Tagging.where(context: "ml_investment_tags").count).to be 1
+
+      machine_learning = MachineLearning.new(job)
+      machine_learning.send(:cleanup_investments_comments_summary!)
+
+      expect(RelatedContent.for_proposals.from_machine_learning.count).to be 2
+      expect(RelatedContent.for_investments.from_machine_learning.count).to be 2
+      expect(Tag.count).to be 3
+      expect(Tagging.count).to be 3
+      expect(Tagging.where(context: "tags").count).to be 1
+      expect(Tagging.where(context: "ml_proposal_tags").count).to be 1
+      expect(Tagging.where(context: "ml_investment_tags").count).to be 1
+    end
+
     it "deletes budget investments comments summary machine learning generated data" do
       create :ml_summary_comment, commentable: create(:proposal)
       create :ml_summary_comment, commentable: create(:budget_investment)
-      create :related_content, :proposals, :from_machine_learning
-      create :related_content, :budget_investments, :from_machine_learning
-      tag = create(:tag)
-      MlTag.create!(tag: tag)
-      MlTagging.create!(tagging: create(:tagging, tag: tag))
 
       expect(MlSummaryComment.where(commentable_type: "Proposal").count).to be 1
       expect(MlSummaryComment.where(commentable_type: "Budget::Investment").count).to be 1
-      expect(RelatedContent.for_proposals.from_machine_learning.count).to be 2
-      expect(RelatedContent.for_investments.from_machine_learning.count).to be 2
-      expect(Tag.count).to be 1
-      expect(MlTag.count).to be 1
-      expect(Tagging.count).to be 1
-      expect(MlTagging.count).to be 1
 
       machine_learning = MachineLearning.new(job)
       machine_learning.send(:cleanup_investments_comments_summary!)
 
       expect(MlSummaryComment.where(commentable_type: "Proposal").count).to be 1
       expect(MlSummaryComment.where(commentable_type: "Budget::Investment")).to be_empty
-      expect(RelatedContent.for_proposals.from_machine_learning.count).to be 2
-      expect(RelatedContent.for_investments.from_machine_learning.count).to be 2
-      expect(Tag.count).to be 1
-      expect(MlTag.count).to be 1
-      expect(Tagging.count).to be 1
-      expect(MlTagging.count).to be 1
     end
   end
 
@@ -444,111 +522,85 @@ describe MachineLearning do
 
   describe "#import_ml_proposals_tags" do
     it "feeds the database using content from the JSON file generated by the machine learning script" do
+      create :tag, name: "Existing tag"
+      proposal = create :proposal
       machine_learning = MachineLearning.new(job)
 
-      data = [
-        { id: 12345,
-          name: "Machine learning TAG 1" },
-        { id: 54321,
-          name: "Machine learning TAG 2" }
+      tags_data = [
+        { id: 0,
+          name: "Existing tag" },
+        { id: 1,
+          name: "Machine learning tag" }
       ]
 
-      filename = "ml_tags_proposals.json"
-      json_file = MachineLearning::DATA_FOLDER.join(filename)
-      expect(File).to receive(:read).with(json_file).and_return data.to_json
+      taggings_data = [
+        { tag_id: 0,
+          taggable_id: proposal.id
+        },
+        { tag_id: 1,
+          taggable_id: proposal.id
+        }
+      ]
+
+      tags_filename = "ml_tags_proposals.json"
+      tags_json_file = MachineLearning::DATA_FOLDER.join(tags_filename)
+      expect(File).to receive(:read).with(tags_json_file).and_return tags_data.to_json
+
+      taggings_filename = "ml_taggings_proposals.json"
+      taggings_json_file = MachineLearning::DATA_FOLDER.join(taggings_filename)
+      expect(File).to receive(:read).with(taggings_json_file).and_return taggings_data.to_json
 
       machine_learning.send(:import_ml_proposals_tags)
 
-      expect(MlTag.count).to be 2
-      expect(MlTag.find(12345).tag.name).to eq "Machine learning TAG 1"
-      expect(MlTag.find(54321).tag.name).to eq "Machine learning TAG 2"
+      expect(Tag.count).to be 2
+      expect(Tag.first.name).to eq "Existing tag"
+      expect(Tag.last.name).to eq "Machine learning tag"
+      expect(proposal.tags).to be_empty
+      expect(proposal.ml_proposal_tags.count).to be 2
+      expect(proposal.ml_proposal_tags.first.name).to eq "Existing tag"
+      expect(proposal.ml_proposal_tags.last.name).to eq "Machine learning tag"
     end
   end
 
   describe "#import_ml_investments_tags" do
     it "feeds the database using content from the JSON file generated by the machine learning script" do
+      create :tag, name: "Existing tag"
+      investment = create :budget_investment
       machine_learning = MachineLearning.new(job)
 
-      data = [
-        { id: 23456,
-          name: "Machine learning TAG 1" },
-        { id: 65432,
-          name: "Machine learning TAG 2" }
+      tags_data = [
+        { id: 0,
+          name: "Existing tag" },
+        { id: 1,
+          name: "Machine learning tag" }
       ]
 
-      filename = "ml_tags_budgets.json"
-      json_file = MachineLearning::DATA_FOLDER.join(filename)
-      expect(File).to receive(:read).with(json_file).and_return data.to_json
+      taggings_data = [
+        { tag_id: 0,
+          taggable_id: investment.id
+        },
+        { tag_id: 1,
+          taggable_id: investment.id
+        }
+      ]
+
+      tags_filename = "ml_tags_budgets.json"
+      tags_json_file = MachineLearning::DATA_FOLDER.join(tags_filename)
+      expect(File).to receive(:read).with(tags_json_file).and_return tags_data.to_json
+
+      taggings_filename = "ml_taggings_budgets.json"
+      taggings_json_file = MachineLearning::DATA_FOLDER.join(taggings_filename)
+      expect(File).to receive(:read).with(taggings_json_file).and_return taggings_data.to_json
 
       machine_learning.send(:import_ml_investments_tags)
 
-      expect(MlTag.count).to be 2
-      expect(MlTag.find(23456).tag.name).to eq "Machine learning TAG 1"
-      expect(MlTag.find(65432).tag.name).to eq "Machine learning TAG 2"
-    end
-  end
-
-  describe "#import_ml_proposals_taggings" do
-    it "feeds the database using content from the JSON file generated by the machine learning script" do
-      machine_learning = MachineLearning.new(job)
-      machine_learning.instance_variable_set "@offset", 0
-
-      proposal_tag_1 = create :tag
-      ml_proposal_tag_1 = create :ml_tag, tag: proposal_tag_1
-      proposal_tag_2 = create :tag
-      ml_proposal_tag_2 = create :ml_tag, tag: proposal_tag_2
-      proposal = create :proposal
-
-      data = [
-        { tag_id: ml_proposal_tag_1.id,
-          taggable_id: proposal.id,
-          taggable_type: "Proposal" },
-        { tag_id: ml_proposal_tag_2.id,
-          taggable_id: proposal.id,
-          taggable_type: "Proposal" }
-      ]
-
-      filename = "ml_taggings_proposals.json"
-      json_file = MachineLearning::DATA_FOLDER.join(filename)
-      expect(File).to receive(:read).with(json_file).and_return data.to_json
-
-      machine_learning.send(:import_ml_proposals_taggings)
-
-      expect(proposal.tags.count).to be 2
-      expect(proposal.tags.first).to eq proposal_tag_1
-      expect(proposal.tags.last).to eq proposal_tag_2
-    end
-  end
-
-  describe "#import_ml_investments_taggings" do
-    it "feeds the database using content from the JSON file generated by the machine learning script" do
-      machine_learning = MachineLearning.new(job)
-      machine_learning.instance_variable_set "@offset", 0
-
-      investment_tag_1 = create :tag
-      ml_investment_tag_1 = create :ml_tag, tag: investment_tag_1
-      investment_tag_2 = create :tag
-      ml_investment_tag_2 = create :ml_tag, tag: investment_tag_2
-      investment = create :budget_investment
-
-      data = [
-        { tag_id: ml_investment_tag_1.id,
-          taggable_id: investment.id,
-          taggable_type: "Budget::Investment" },
-        { tag_id: ml_investment_tag_2.id,
-          taggable_id: investment.id,
-          taggable_type: "Budget::Investment" }
-      ]
-
-      filename = "ml_taggings_budgets.json"
-      json_file = MachineLearning::DATA_FOLDER.join(filename)
-      expect(File).to receive(:read).with(json_file).and_return data.to_json
-
-      machine_learning.send(:import_ml_investments_taggings)
-
-      expect(investment.tags.count).to be 2
-      expect(investment.tags.first).to eq investment_tag_1
-      expect(investment.tags.last).to eq investment_tag_2
+      expect(Tag.count).to be 2
+      expect(Tag.first.name).to eq "Existing tag"
+      expect(Tag.last.name).to eq "Machine learning tag"
+      expect(investment.tags).to be_empty
+      expect(investment.ml_investment_tags.count).to be 2
+      expect(investment.ml_investment_tags.first.name).to eq "Existing tag"
+      expect(investment.ml_investment_tags.last.name).to eq "Machine learning tag"
     end
   end
 end
