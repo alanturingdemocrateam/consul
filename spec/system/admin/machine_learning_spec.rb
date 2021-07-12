@@ -209,18 +209,13 @@ describe "Machine learning" do
     select "proposals_summary_comments_textrank.py", from: :script
 
     within "#script_descriptions" do
-      expect(page).to have_content "This script generates for each proposal a summary of all its comments."
-      expect(page).to have_content "Running time: Max 1 hour for 10.000 proposals."
-      expect(page).to have_content "Technique used: GloVe embeddings and TextRank."
+      expect(page).to have_content "Proposals comments summaries - Dummy script"
     end
 
     select "proposals_related_content_and_tags_nmf.py", from: :script
 
     within "#script_descriptions" do
-      expect(page).to have_content "Related Proposals and Tags"
-      expect(page).to have_content "This script generates for each proposal: a) Tags, b) List of related proposals."
-      expect(page).to have_content "Running time: Max 2 hours for 10.000 proposals."
-      expect(page).to have_content "Technique used: NNMF and Euclidean distance between proposals."
+      expect(page).to have_content "Related Proposals and Tags - Dummy script"
     end
   end
 
